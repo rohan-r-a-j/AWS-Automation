@@ -99,8 +99,8 @@ export default function NavComponents(props) {
                 Search
               </button>
             </form>
-            <div className="Account-id">
-              <h5>Account ID: 051650638025</h5>
+            <div className="d-flex flex-row align-items-center mx-2">
+              <h6 className="text-light" style={{margin:0}}>AWS ID: 051650638025</h6>
             </div>
           </div>
         </div>
