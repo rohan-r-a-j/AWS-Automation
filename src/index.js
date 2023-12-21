@@ -15,18 +15,23 @@ let router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
+  
   },
   {
-    path:"/get-instance-details",
-    element:<GetInstaceDetails />
-  }
+    path: "/get-instance-details",
+    element: <GetInstaceDetails />,
+  },
 ]);
+
+console.log('INdex')
 root.render(
-  <React.StrictMode>
+  <>
+    {/* <React.StrictMode> */}
     <NavComponents />
-    <RouterProvider router={router} />
-  </React.StrictMode>
+      <RouterProvider fallbackElement={<><div>Loading...</div></>} router={router} />
+    {/* </React.StrictMode> */}
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function
