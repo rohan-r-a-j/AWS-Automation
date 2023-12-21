@@ -1,6 +1,6 @@
-"use strict";
-import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
+import React, {  useEffect, useState } from "react";
+
 import PieChartComponent from "./PieChart";
 
 let instanceConfig = [
@@ -26,7 +26,7 @@ let instanceConfig = [
     label: "S3 Buckets",
     classNames: ["text-danger"],
     dataKey: "S3",
-    type:"s3"
+    type: "s3"
   },
 ];
 
@@ -250,8 +250,11 @@ const Home = React.memo(() => {
 
     let users = JSON.parse(localStorage.getItem("users"));
     let instancesCount = JSON.parse(localStorage.getItem("instances"));
-    let resources=  JSON.parse(localStorage.getItem("resourceDetails"));
-    if(resources) setResourceDetails(resources);
+    let resources = JSON.parse(localStorage.getItem("resourceDetails"));
+    if (resources) setResourceDetails(resources)
+    else {
+      instanceConfig.forEach(item => handleCardApiCall(item.type))
+    };
     if (instancesCount) {
       setInstances(instancesCount);
     } else {
