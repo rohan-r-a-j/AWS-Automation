@@ -9,6 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #eee;
 }
 
 code {
@@ -66,8 +67,6 @@ code {
   position: absolute;
 } */
 
-
-
 .flip {
   background-color: transparent;
   width: 300px;
@@ -92,7 +91,8 @@ code {
 }
 
 /* Position the front and back side */
-.front, .back {
+.front,
+.back {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -113,8 +113,18 @@ code {
   transform: rotateY(180deg);
 }
 
-text{
+text {
   font-weight: bold;
   font-size: 0.8rem !important;
   font-family: sans-serif !important;
+}
+
+.tab {
+  border: none;
+background-color: #ccc;
+  padding: 0.4rem 0.8rem;
+  /* margin-inline: 2px; */
+}
+.active {
+  border-bottom: solid 2px #888;
 }

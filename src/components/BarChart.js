@@ -89,7 +89,7 @@ let x = {
 const BarChart = ({ data /* see data tab */ }) => (
   <ResponsiveBar
    
-    data={mapBarChartData(x).toReversed()}
+    data={mapBarChartData(data).toReversed()}
     keys={barChartKey(x)}
     indexBy="month"
     margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
@@ -97,6 +97,7 @@ const BarChart = ({ data /* see data tab */ }) => (
     valueScale={{ type: "linear" }}
     indexScale={{ type: "band", round: true }}
     colors={{ scheme: "paired" }}
+    
     defs={[
       {
         id: "dots",

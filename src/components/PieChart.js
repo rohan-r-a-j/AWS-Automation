@@ -84,6 +84,7 @@ const PieChartComponent = ({ chartData }) => (
     padAngle={0.7}
     sortByValue={true}
     cornerRadius={3}
+ colors={{scheme:'set2'}}
     activeOuterRadiusOffset={8}
     borderWidth={1}
     borderColor={{

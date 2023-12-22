@@ -19,7 +19,7 @@ export function mapBarChartData(data) {
   for (const key in data) {
     mapped.push({ month: key, ...data[key]["Service wise Cost"] });
   }
-
+  console.log("bar", mapped);
   return mapped;
 }
 export function barChartKey(data) {
@@ -30,8 +30,48 @@ export function barChartKey(data) {
       keys[nestedKey] = nestedKey;
     }
   }
+  let keysArray = Object.keys(keys);
+  console.log("keys", keysArray);
+  return keysArray;
+}
 
-  return Object.keys(keys);
+export function reorganizeCosts(data) {
+  let organizedData = {};
+  console.log("Data", data);
+  for (let month in data) {
+    let monthData = data[month]["Service wise Cost"];
+
+    if (!organizedData["Total Cost"]) {
+      organizedData["Total Cost"] = {};
+      organizedData["Total Cost"][month] = data[month]["Total Cost"];
+    } else organizedData["Total Cost"][month] = data[month]["Total Cost"];
+
+    console.log("datesx");
+    for (let service in monthData) {
+      if (!organizedData[service]) {
+        organizedData[service] = {};
+      }
+      organizedData[service][month] = monthData[service];
+    }
+  }
+
+  console.log("Organized", organizedData);
+  return organizedData;
+}
+
+// Example usage
+let data = {
+  // ... (your data goes here) ...
+};
+
+let organizedData = reorganizeCosts(data);
+
+// Print the organized data
+for (let service in organizedData) {
+  console.log(service + ":");
+  for (let month in organizedData[service]) {
+    console.log(`  - ${month}: ${organizedData[service][month]} USD`);
+  }
 }
 
 // let costs = {
