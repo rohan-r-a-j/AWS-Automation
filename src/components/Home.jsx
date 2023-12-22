@@ -38,6 +38,7 @@ const Home = React.memo(() => {
   let [resourceDetails, setResourceDetails] = useState({});
   let [costDetails, setCostDetails] = useState({});
   let [date, setDate] = useState(null);
+  let [costChartData, setCostChartData] = useState({});
   function fetchUsers() {
     // let instanceId =queryParams.get('instance_id')
     let lambdaFunctionURL = `https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/`;
@@ -266,6 +267,41 @@ const Home = React.memo(() => {
           });
         break;
 
+      case "reg_cost":
+        console.log("Calling Region Cost Fetch API");
+        setLoading(true);
+        fetch(
+          "https://ux4rlttlwsceskaleaxzm5pyci0mqhua.lambda-url.us-east-1.on.aws/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              // Add any additional headers if needed,
+            },
+            // body:JSON.stringify({ instance_id: instanceId })
+          }
+        )
+          .then((response) => {
+            console.log(response);
+            return response.json();
+          })
+          .then((res) => {
+            //   setInstances(res);
+
+            setCostChartData(res);
+            console.log(res);
+            localStorage.setItem("costChartData", JSON.stringify(res));
+            let date = new Date().toString();
+            localStorage.setItem("updatedAt", date);
+            setDate(date);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
+        break;
+
       default:
         break;
     }
@@ -309,6 +345,9 @@ const Home = React.memo(() => {
     let resources = JSON.parse(localStorage.getItem("resourceDetails"));
     let costs = JSON.parse(localStorage.getItem("costDetails"));
     let updatedAt = localStorage.getItem("updatedAt");
+    let costChart = JSON.parse(localStorage.getItem("costChartData"));
+    if (costChart) setCostChartData(costChart);
+    else handleCardApiCall("reg_cost");
     if (updatedAt) setDate(updatedAt);
     if (resources) setResourceDetails(resources);
     else {
@@ -498,7 +537,8 @@ const Home = React.memo(() => {
                         <div className="flip-inner">
                           <div
                             className={
-                              "card-body " + [item.flip ? "front" : ""].join(" ")
+                              "card-body " +
+                              [item.flip ? "front" : ""].join(" ")
                             }
                           >
                             <div
@@ -819,9 +859,22 @@ const Home = React.memo(() => {
               className="card"
               style={{ width: "100%", height: "100%", aspectRatio: 16 / 8 }}
             >
-              {/* <GeoChart /> */}
+              <div
+                style={{ height: "100%" }}
+                className="d-flex flex-row justify-content-end"
+              >
+                <div style={{ width: "60%", height: "100%" }} className="col-8">
+                  <GeoChart
+                    data={
+                      costChartData["Country Costs"]
+                        ? costChartData["Country Costs"]
+                        : {}
+                    }
+                  />
+                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
       </div>
     </>
