@@ -1,26 +1,42 @@
 import { ResponsiveChoropleth } from "@nivo/geo";
 import { features } from "../shared/features";
 import { mapGeoData } from "../utils/utils";
-
+import { scaleQuantize } from 'd3-scale';
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
+const colorScale = scaleQuantize()
+  .domain([0, 1000]) // Your domain from the minimum to maximum value
+  .range([
+    '#00ff00', // Green for 0-50
+    '#bfff00', // Lighter green for 50-100
+    '#ffff00', // Yellow for 100-400
+    '#ff8000', // Orange for 400-600
+    '#ff0000'  // Red for 600+
+  ]);
 
 // console.log("geoData", mapGeoData({data}));
 const GeoChart = ({data}) => (
   <ResponsiveChoropleth
-    data={mapGeoData(data)}
-    // data={[]}
-    features={features.features}
-    onClick={(e) => console.log(e)}
-    margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-    colors="nivo"
-    domain={[0, 400]}
-    unknownColor="#666666"
-    label="properties.name"
-    valueFormat=".2s"
+  data={mapGeoData(data)}
+  features={features.features}
+  colors={colorScale} // Apply the quantize scale here
+  // domain={[0, 700]}
+  onClick={(e) => console.log(e)}
+  margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+  // colors={[
+  //   [0, '#00ff00'], // Green for 0-50
+  //   [50, '#bfff00'], // Lighter green for 50-100
+  //   [100, '#ffff00'], // Yellow for 100-400
+  //   [400, '#ff8000'], // Orange for 400-600
+  //   [600, '#ff0000']  // Red for 600+
+  // ]}
+  domain={[0, 1000]} // Extended to 700 to cover 600+
+  unknownColor="#666666"
+  label="properties.name"
+  valueFormat=".2s"
     // theme={{'labels':{'text'}}}
     
     tooltip={({ feature }) =>
@@ -70,20 +86,20 @@ const GeoChart = ({data}) => (
         lineWidth: 6,
         spacing: 10,
       },
-      {
-        id: "valueGradient",
-        type: "linearGradient",
-        colors: [
-          {
-            offset: 0,
-            color: "#0f0",
-          },
-          {
-            offset: 100,
-            color: "#f00",
-          },
-        ],
-      },
+      // {
+      //   id: "valueGradient",
+      //   type: "linearGradient",
+      //   colors: [
+      //     {
+      //       offset: 0,
+      //       color: "#0f0",
+      //     },
+      //     {
+      //       offset: 100,
+      //       color: "#f00",
+      //     },
+      //   ],
+      // },
     ]}
     // fill={[
     //   {

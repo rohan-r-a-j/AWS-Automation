@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import PieChartComponent from "./PieChart";
 import moment from "moment/moment";
 import GeoChart from "./GeoChart";
+import BarChart from "./BarChart";
 let instanceConfig = [
   {
     label: "EC2 Instances",
@@ -39,6 +40,7 @@ const Home = React.memo(() => {
   let [costDetails, setCostDetails] = useState({});
   let [date, setDate] = useState(null);
   let [costChartData, setCostChartData] = useState({});
+  let [compareCostData, setCompareCostData] = useState({});
   function fetchUsers() {
     // let instanceId =queryParams.get('instance_id')
     let lambdaFunctionURL = `https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/`;
@@ -302,6 +304,41 @@ const Home = React.memo(() => {
           });
         break;
 
+      case "compare_cost":
+        console.log("Calling Compare Cost API");
+        setLoading(true);
+        fetch(
+          "https://7oofpr4fxbh52maft7khgji72m0sxrmx.lambda-url.us-east-1.on.aws/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              // Add any additional headers if needed,
+            },
+            // body:JSON.stringify({ instance_id: instanceId })
+          }
+        )
+          .then((response) => {
+            console.log(response);
+            return response.json();
+          })
+          .then((res) => {
+            //   setInstances(res);
+
+            setCompareCostData(res);
+            console.log(res);
+            localStorage.setItem("compareCostData", JSON.stringify(res));
+            let date = new Date().toString();
+            localStorage.setItem("updatedAt", date);
+            setDate(date);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
+        break;
+
       default:
         break;
     }
@@ -346,6 +383,9 @@ const Home = React.memo(() => {
     let costs = JSON.parse(localStorage.getItem("costDetails"));
     let updatedAt = localStorage.getItem("updatedAt");
     let costChart = JSON.parse(localStorage.getItem("costChartData"));
+    let compCost = JSON.parse(localStorage.getItem("compareCostData"));
+    if (compCost) setCompareCostData(compCost);
+    else handleCardApiCall("compare_cost");
     if (costChart) setCostChartData(costChart);
     else handleCardApiCall("reg_cost");
     if (updatedAt) setDate(updatedAt);
@@ -693,8 +733,8 @@ const Home = React.memo(() => {
             >
               {/* <img src="..." class="card-img-top" alt="..." /> */}
               <div className="card-body d-flex flex-column justify-content-between">
-                <h3 className="card-title">cost analysis</h3>
-
+                <h3 className="card-title">Monthly Cost Trend</h3>
+                <BarChart data={compareCostData}/>
                 <div className="d-grid"></div>
               </div>
             </div>

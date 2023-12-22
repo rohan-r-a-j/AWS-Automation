@@ -1,5 +1,5 @@
 export function mapGeoData(costs) {
-    // console.log("passed",costs)
+  // console.log("passed",costs)
   let d = Object.entries(costs);
   let dataArray = [];
   for (let item of d) {
@@ -10,10 +10,30 @@ export function mapGeoData(costs) {
       regions: Object.entries(item[1]),
     });
   }
-//   console.log("dataArray",dataArray)
+  //   console.log("dataArray",dataArray)
   return dataArray;
 }
-       
+
+export function mapBarChartData(data) {
+  let mapped = [];
+  for (const key in data) {
+    mapped.push({ month: key, ...data[key]["Service wise Cost"] });
+  }
+
+  return mapped;
+}
+export function barChartKey(data) {
+  let keys = {};
+  for (const key in data) {
+    // mapped.push({ month: key, ...data[key]["Service wise Cost"] });
+    for (let nestedKey in data[key]["Service wise Cost"]) {
+      keys[nestedKey] = nestedKey;
+    }
+  }
+
+  return Object.keys(keys);
+}
+
 // let costs = {
 //   USA: {
 //     "us-east-1": 855.71,
