@@ -1,5 +1,5 @@
 export function mapGeoData(costs) {
-    // console.log("passed",costs)
+  // console.log("passed",costs)
   let d = Object.entries(costs);
   let dataArray = [];
   for (let item of d) {
@@ -10,10 +10,70 @@ export function mapGeoData(costs) {
       regions: Object.entries(item[1]),
     });
   }
-//   console.log("dataArray",dataArray)
+  //   console.log("dataArray",dataArray)
   return dataArray;
 }
-       
+
+export function mapBarChartData(data) {
+  let mapped = [];
+  for (const key in data) {
+    mapped.push({ month: key, ...data[key]["Service wise Cost"] });
+  }
+  console.log("bar", mapped);
+  return mapped;
+}
+export function barChartKey(data) {
+  let keys = {};
+  for (const key in data) {
+    // mapped.push({ month: key, ...data[key]["Service wise Cost"] });
+    for (let nestedKey in data[key]["Service wise Cost"]) {
+      keys[nestedKey] = nestedKey;
+    }
+  }
+  let keysArray = Object.keys(keys);
+  console.log("keys", keysArray);
+  return keysArray;
+}
+
+export function reorganizeCosts(data) {
+  let organizedData = {};
+  console.log("Data", data);
+  for (let month in data) {
+    let monthData = data[month]["Service wise Cost"];
+
+    if (!organizedData["Total Cost"]) {
+      organizedData["Total Cost"] = {};
+      organizedData["Total Cost"][month] = data[month]["Total Cost"];
+    } else organizedData["Total Cost"][month] = data[month]["Total Cost"];
+
+    console.log("datesx");
+    for (let service in monthData) {
+      if (!organizedData[service]) {
+        organizedData[service] = {};
+      }
+      organizedData[service][month] = monthData[service];
+    }
+  }
+
+  console.log("Organized", organizedData);
+  return organizedData;
+}
+
+// Example usage
+let data = {
+  // ... (your data goes here) ...
+};
+
+let organizedData = reorganizeCosts(data);
+
+// Print the organized data
+for (let service in organizedData) {
+  console.log(service + ":");
+  for (let month in organizedData[service]) {
+    console.log(`  - ${month}: ${organizedData[service][month]} USD`);
+  }
+}
+
 // let costs = {
 //   USA: {
 //     "us-east-1": 855.71,

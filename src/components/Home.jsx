@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import PieChartComponent from "./PieChart";
 import moment from "moment/moment";
 import GeoChart from "./GeoChart";
+import BarChart from "./BarChart";
+import { barChartKey, mapBarChartData, reorganizeCosts } from "../utils/utils";
 let instanceConfig = [
   {
     label: "EC2 Instances",
@@ -39,6 +41,8 @@ const Home = React.memo(() => {
   let [costDetails, setCostDetails] = useState({});
   let [date, setDate] = useState(null);
   let [costChartData, setCostChartData] = useState({});
+  let [compareCostData, setCompareCostData] = useState({});
+  let [tabIndex, setTabIndex] = useState(0);
   function fetchUsers() {
     // let instanceId =queryParams.get('instance_id')
     let lambdaFunctionURL = `https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/`;
@@ -101,8 +105,9 @@ const Home = React.memo(() => {
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               return { ...prev };
             });
+            setInstances(res);
             console.log(res);
-            //   localStorage.setItem("instances", JSON.stringify(res));
+            localStorage.setItem("instances", JSON.stringify(res));
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
             setDate(date);
@@ -302,6 +307,41 @@ const Home = React.memo(() => {
           });
         break;
 
+      case "compare_cost":
+        console.log("Calling Compare Cost API");
+        setLoading(true);
+        fetch(
+          "https://7oofpr4fxbh52maft7khgji72m0sxrmx.lambda-url.us-east-1.on.aws/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              // Add any additional headers if needed,
+            },
+            // body:JSON.stringify({ instance_id: instanceId })
+          }
+        )
+          .then((response) => {
+            console.log(response);
+            return response.json();
+          })
+          .then((res) => {
+            //   setInstances(res);
+
+            setCompareCostData(res);
+            console.log(res);
+            localStorage.setItem("compareCostData", JSON.stringify(res));
+            let date = new Date().toString();
+            localStorage.setItem("updatedAt", date);
+            setDate(date);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
+        break;
+
       default:
         break;
     }
@@ -346,6 +386,9 @@ const Home = React.memo(() => {
     let costs = JSON.parse(localStorage.getItem("costDetails"));
     let updatedAt = localStorage.getItem("updatedAt");
     let costChart = JSON.parse(localStorage.getItem("costChartData"));
+    let compCost = JSON.parse(localStorage.getItem("compareCostData"));
+    if (compCost) setCompareCostData(compCost);
+    else handleCardApiCall("compare_cost");
     if (costChart) setCostChartData(costChart);
     else handleCardApiCall("reg_cost");
     if (updatedAt) setDate(updatedAt);
@@ -369,8 +412,8 @@ const Home = React.memo(() => {
   return (
     <>
       <br />
-      <div className="d-flex flex-row justify-content-between align-items-center">
-        <h2>Global Dashboard</h2>
+      <div className="d-flex px-5 flex-row justify-content-between align-items-center">
+        <h2 style={{fontFamily:"sans-serif", fontWeight:"bolder", fontSize: "1.8rem",border:'none',color:"#244",letterSpacing:'4px',borderBottom:"solid 5px rgba(95, 30, 190, 1)"}}> Admin Dashboard</h2>
         <span style={{ color: "#444" }}>
           Last Updated: <b>{moment(new Date(date)).fromNow()}</b>
         </span>
@@ -495,7 +538,7 @@ const Home = React.memo(() => {
               <div className="card-body d-flex flex-column justify-content-between ">
                 <div className="d-flex flex-row justify-content-between align-items-center">
                   <h5 className="card-title">
-                    Get Instance Details Through ID
+                   Resource Utilization Overview
                   </h5>
                   <button
                     onClick={findInstanceCount}
@@ -534,6 +577,33 @@ const Home = React.memo(() => {
                           aspectRatio: 4 / 3,
                         }}
                       >
+                        <button
+                          onClick={() => handleCardApiCall(item.type)}
+                          type="button"
+                          className="btn "
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0,
+                            zIndex: 3,
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={20}
+                            fill="currentColor"
+                            className={
+                              "bi bi-arrow-repeat " + (loading ? "rotate" : "")
+                            }
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+                            <path
+                              fillRule="evenodd"
+                              d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
+                            ></path>
+                          </svg>
+                        </button>
                         <div className="flip-inner">
                           <div
                             className={
@@ -550,33 +620,6 @@ const Home = React.memo(() => {
                               {resourceDetails[item.dataKey.toString()]}
                             </div>
                             <h4 className="text-center">{item.label}</h4>
-                            <button
-                              onClick={() => handleCardApiCall(item.type)}
-                              type="button"
-                              className="btn "
-                              style={{
-                                position: "absolute",
-                                bottom: 0,
-                                right: 0,
-                              }}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width={20}
-                                fill="currentColor"
-                                className={
-                                  "bi bi-arrow-repeat " +
-                                  (loading ? "rotate" : "")
-                                }
-                                viewBox="0 0 16 16"
-                              >
-                                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                                <path
-                                  fillRule="evenodd"
-                                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
-                                ></path>
-                              </svg>
-                            </button>
                           </div>
                           {item.flip && (
                             <div className="card-body back">
@@ -692,9 +735,77 @@ const Home = React.memo(() => {
               style={{ width: "100%", height: "100%", aspectRatio: 4 / 3 }}
             >
               {/* <img src="..." class="card-img-top" alt="..." /> */}
-              <div className="card-body d-flex flex-column justify-content-between">
-                <h3 className="card-title">cost analysis</h3>
 
+              <div className="card-body d-flex flex-column justify-content-between">
+                <h3 className="card-title">Monthly Cost Trend</h3>
+                <div className="d-flex flex-row justify-content-start">
+                  <span
+                    onClick={() => setTabIndex(0)}
+                    className={
+                      "tab " + [tabIndex == 0 ? "active" : ""].join(" ")
+                    }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-bar-chart-line-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
+                    </svg>
+                  </span>
+                  <span
+                    onClick={() => setTabIndex(1)}
+                    className={
+                      "tab " + [tabIndex == 1 ? "active" : ""].join(" ")
+                    }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-table"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z" />
+                    </svg>
+                  </span>
+                </div>
+                {tabIndex === 0 && <BarChart data={compareCostData} />}
+                {tabIndex == 1 && (
+                  <table
+                    style={{ overflowX: "scroll", maxWidth: "100%" }}
+                    className="table table-sm table-striped table-bordered border-primary"
+                  >
+                    <thead>
+                      <tr>
+                        <th scope="col">Services</th>
+                        {Object.keys(compareCostData).map((item, index) => (
+                          <th key={index} scope="col">
+                            {item}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody  className="table-group-divider">
+                      {["Total Cost", ...barChartKey(compareCostData)].map(
+                        (item, index) => (
+                          <tr key={index}>
+                            <th scope="row">{item}</th>
+                            {Object.values(
+                              reorganizeCosts(compareCostData)[item]
+                            ).map((value, index) => (
+                              <td key={index}>{value}</td>
+                            ))}
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                )}
                 <div className="d-grid"></div>
               </div>
             </div>
