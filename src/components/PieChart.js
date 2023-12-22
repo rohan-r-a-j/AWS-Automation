@@ -3,7 +3,7 @@ import { ResponsivePie } from "@nivo/pie";
 export function mapAWSCostToChartData(topServices) {
   // Define a base color palette or logic for assigning colors
   const colors = [
-    "hsl(338, 70%, 50%)",
+    "hsl(240, 100%, 50%)",
     "hsl(354, 70%, 50%)",
     "hsl(59, 70%, 50%)",
     "hsl(71, 70%, 50%)",
@@ -12,7 +12,7 @@ export function mapAWSCostToChartData(topServices) {
     "hsl(120, 70%, 50%)",
   ];
 
-  return topServices?.map((service, index) => {
+  let mapped= topServices?.map((service, index) => {
     return {
       id: service.service.replace(/[^a-zA-Z0-9]/g, ""), // Remove non-alphanumeric characters for ID
       label: service.service,
@@ -20,6 +20,8 @@ export function mapAWSCostToChartData(topServices) {
       color: colors[index % colors.length], // Assign a color, cycle through colors array
     };
   });
+console.log(mapped)
+  return mapped
 }
 
 // Example usage
@@ -75,6 +77,7 @@ let data = [
 const PieChartComponent = ({ chartData }) => (
   <ResponsivePie
     data={mapAWSCostToChartData(chartData)}
+    // data={data}
     margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
     fit={true}
     innerRadius={0.5}
@@ -117,89 +120,89 @@ const PieChartComponent = ({ chartData }) => (
     //     </g>
     //   );
     // }}
-    defs={[
-      {
-        id: "dots",
-        type: "patternDots",
-        background: "inherit",
-        color: "rgba(255, 255, 255, 0.3)",
-        size: 4,
-        padding: 1,
-        stagger: true,
-      },
-      {
-        id: "lines",
-        type: "patternLines",
-        background: "inherit",
-        color: "rgba(255, 255, 255, 0.3)",
-        rotation: -45,
-        lineWidth: 6,
-        spacing: 10,
-      },
-    ]}
-    fill={[
-      {
-        match: {
-          id: "ruby",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "c",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "go",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "python",
-        },
-        id: "dots",
-      },
-      {
-        match: {
-          id: "scala",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "lisp",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "elixir",
-        },
-        id: "lines",
-      },
-      {
-        match: {
-          id: "javascript",
-        },
-        id: "lines",
-      },
-    ]}
+    // defs={[
+    //   {
+    //     id: "dots",
+    //     type: "patternDots",
+    //     background: "inherit",
+    //     color: "rgba(255, 255, 255, 0.3)",
+    //     size: 4,
+    //     padding: 1,
+    //     stagger: true,
+    //   },
+    //   {
+    //     id: "lines",
+    //     type: "patternLines",
+    //     background: "inherit",
+    //     color: "rgba(255, 255, 255, 0.3)",
+    //     rotation: -45,
+    //     lineWidth: 6,
+    //     spacing: 10,
+    //   },
+    // ]}
+    // fill={[
+    //   {
+    //     match: {
+    //       id: "ruby",
+    //     },
+    //     id: "dots",
+    //   },
+    //   {
+    //     match: {
+    //       id: "c",
+    //     },
+    //     id: "dots",
+    //   },
+    //   {
+    //     match: {
+    //       id: "go",
+    //     },
+    //     id: "dots",
+    //   },
+    //   {
+    //     match: {
+    //       id: "python",
+    //     },
+    //     id: "dots",
+    //   },
+    //   {
+    //     match: {
+    //       id: "scala",
+    //     },
+    //     id: "lines",
+    //   },
+    //   {
+    //     match: {
+    //       id: "lisp",
+    //     },
+    //     id: "lines",
+    //   },
+    //   {
+    //     match: {
+    //       id: "elixir",
+    //     },
+    //     id: "lines",
+    //   },
+    //   {
+    //     match: {
+    //       id: "javascript",
+    //     },
+    //     id: "lines",
+    //   },
+    // ]}
     legends={[
       {
         anchor: "top-right",
         direction: "column",
         justify: false,
-        translateX: 100,
+        translateX: 70,
         translateY: -20,
-        itemsSpacing: 0,
-        itemWidth: 300,
+        itemsSpacing: 2,
+        itemWidth: 350,
         itemHeight: 18,
-        itemTextColor: "#999",
+        itemTextColor: "#404",
         itemDirection: "left-to-right",
-        itemBackground: "#ddd",
+        // itemBackground: "#ddd",
         itemOpacity: 1,
         symbolSize: 18,
         symbolShape: "circle",

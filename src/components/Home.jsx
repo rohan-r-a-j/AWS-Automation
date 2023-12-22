@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import PieChartComponent from "./PieChart";
 import moment from "moment/moment";
+import GeoChart from "./GeoChart";
 let instanceConfig = [
   {
     label: "EC2 Instances",
     classNames: ["text-primary"],
     dataKey: "Total EC2",
     type: "ec2",
+    flip: true,
   },
   {
     label: "EKS Cluster",
@@ -35,7 +37,7 @@ const Home = React.memo(() => {
   let [instances, setInstances] = useState({});
   let [resourceDetails, setResourceDetails] = useState({});
   let [costDetails, setCostDetails] = useState({});
-let [date,setDate]=useState(null)
+  let [date, setDate] = useState(null);
   function fetchUsers() {
     // let instanceId =queryParams.get('instance_id')
     let lambdaFunctionURL = `https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/`;
@@ -57,9 +59,9 @@ let [date,setDate]=useState(null)
         console.log(res);
         localStorage.setItem("users", JSON.stringify(res));
         setLoading(false);
-          let date = new Date().toString()
-            localStorage.setItem("updatedAt", date);
-            setDate(date)
+        let date = new Date().toString();
+        localStorage.setItem("updatedAt", date);
+        setDate(date);
       })
       .catch((err) => {
         console.log(err);
@@ -100,9 +102,9 @@ let [date,setDate]=useState(null)
             });
             console.log(res);
             //   localStorage.setItem("instances", JSON.stringify(res));
-            let date = new Date().toString()
+            let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
-            setDate(date)
+            setDate(date);
             setLoading(false);
           })
           .catch((err) => {
@@ -135,9 +137,9 @@ let [date,setDate]=useState(null)
               prev["EKS"] = res["EKS"];
               console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
-                let date = new Date().toString()
-            localStorage.setItem("updatedAt", date);
-            setDate(date)
+              let date = new Date().toString();
+              localStorage.setItem("updatedAt", date);
+              setDate(date);
               return { ...prev };
             });
             console.log(res);
@@ -178,9 +180,9 @@ let [date,setDate]=useState(null)
             });
             console.log(res);
             //   localStorage.setItem("instances", JSON.stringify(res));
-              let date = new Date().toString()
+            let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
-            setDate(date)
+            setDate(date);
             setLoading(false);
           })
           .catch((err) => {
@@ -214,9 +216,9 @@ let [date,setDate]=useState(null)
               prev["S3"] = res["S3"];
               console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
-                let date = new Date().toString()
-            localStorage.setItem("updatedAt", date);
-            setDate(date)
+              let date = new Date().toString();
+              localStorage.setItem("updatedAt", date);
+              setDate(date);
               return { ...prev };
             });
             console.log(res);
@@ -253,9 +255,9 @@ let [date,setDate]=useState(null)
             setCostDetails(res);
             console.log(res);
             localStorage.setItem("costDetails", JSON.stringify(res));
-              let date = new Date().toString()
+            let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
-            setDate(date)
+            setDate(date);
             setLoading(false);
           })
           .catch((err) => {
@@ -289,9 +291,9 @@ let [date,setDate]=useState(null)
         setInstances(res);
         console.log(res);
         localStorage.setItem("instances", JSON.stringify(res));
-        let date = new Date().toString()
+        let date = new Date().toString();
         localStorage.setItem("updatedAt", date);
-        setDate(date)
+        setDate(date);
         setLoading(false);
       })
       .catch((err) => {
@@ -301,13 +303,13 @@ let [date,setDate]=useState(null)
   };
   useEffect(() => {
     console.log("call effect");
-    
+
     let users = JSON.parse(localStorage.getItem("users"));
     let instancesCount = JSON.parse(localStorage.getItem("instances"));
     let resources = JSON.parse(localStorage.getItem("resourceDetails"));
     let costs = JSON.parse(localStorage.getItem("costDetails"));
     let updatedAt = localStorage.getItem("updatedAt");
-    if(updatedAt) setDate(updatedAt);
+    if (updatedAt) setDate(updatedAt);
     if (resources) setResourceDetails(resources);
     else {
       instanceConfig.forEach((item) => handleCardApiCall(item.type));
@@ -329,11 +331,10 @@ let [date,setDate]=useState(null)
     <>
       <br />
       <div className="d-flex flex-row justify-content-between align-items-center">
-
-      <h2>Global Dashboard</h2>
-      <span style={{color:"#444"}}>
-        Last Updated: <b>{moment(new Date(date)).fromNow()}</b>
-      </span>
+        <h2>Global Dashboard</h2>
+        <span style={{ color: "#444" }}>
+          Last Updated: <b>{moment(new Date(date)).fromNow()}</b>
+        </span>
       </div>
       <br />
       <div className="container d-flex justify-content-center align-items-center">
@@ -485,42 +486,77 @@ let [date,setDate]=useState(null)
                     <div key={item.label} className="col-6">
                       {" "}
                       <div
-                        className="card"
+                        className={
+                          "card " + [item.flip ? "flip" : ""].join(" ")
+                        }
                         style={{
                           width: "100%",
                           height: "100%",
                           aspectRatio: 4 / 3,
                         }}
                       >
-                        <div
-                          className={"text-center " + item.classNames.join(" ")}
-                          style={{ fontSize: "5rem", fontWeight: "bold" }}
-                        >
-                          {resourceDetails[item.dataKey.toString()]}
-                        </div>
-                        <h4 className="text-center">{item.label}</h4>
-                        <button
-                          onClick={() => handleCardApiCall(item.type)}
-                          type="button"
-                          className="btn "
-                          style={{ position: "absolute", bottom: 0, right: 0 }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={20}
-                            fill="currentColor"
+                        <div className="flip-inner">
+                          <div
                             className={
-                              "bi bi-arrow-repeat " + (loading ? "rotate" : "")
+                              "card-body " + [item.flip ? "front" : ""].join(" ")
                             }
-                            viewBox="0 0 16 16"
                           >
-                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                            <path
-                              fillRule="evenodd"
-                              d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
-                            ></path>
-                          </svg>
-                        </button>
+                            <div
+                              className={
+                                "text-center " + item.classNames.join(" ")
+                              }
+                              style={{ fontSize: "5rem", fontWeight: "bold" }}
+                            >
+                              {resourceDetails[item.dataKey.toString()]}
+                            </div>
+                            <h4 className="text-center">{item.label}</h4>
+                            <button
+                              onClick={() => handleCardApiCall(item.type)}
+                              type="button"
+                              className="btn "
+                              style={{
+                                position: "absolute",
+                                bottom: 0,
+                                right: 0,
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={20}
+                                fill="currentColor"
+                                className={
+                                  "bi bi-arrow-repeat " +
+                                  (loading ? "rotate" : "")
+                                }
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+                                <path
+                                  fillRule="evenodd"
+                                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
+                                ></path>
+                              </svg>
+                            </button>
+                          </div>
+                          {item.flip && (
+                            <div className="card-body back">
+                              <div
+                                className="d-flex flex-column justify-content-center align-items-center"
+                                style={{ width: "100%", height: "100%" }}
+                              >
+                                <div className="card p-2">
+                                  <h3 className="text-success">
+                                    Running: {instances["Running EC2"]}
+                                  </h3>
+
+                                  <h3 className="text-danger">
+                                    Stopped: {instances["Stopped EC2"]}
+                                  </h3>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -767,7 +803,7 @@ let [date,setDate]=useState(null)
               style={{ width: "100%", height: "100%", aspectRatio: 16 / 8 }}
             >
               <div className="card-body">
-                <h2 className="text-center">Service Wise Cost Chart</h2>
+                <h2 className="text-center">Top 7 Cost-Incurring Services</h2>
               </div>
               <PieChartComponent
                 chartData={
@@ -778,6 +814,14 @@ let [date,setDate]=useState(null)
               />
             </div>
           </div>
+          <div className="col-12">
+            <div
+              className="card"
+              style={{ width: "100%", height: "100%", aspectRatio: 16 / 8 }}
+            >
+              {/* <GeoChart /> */}
+            </div>
+            </div>
         </div>
       </div>
     </>
