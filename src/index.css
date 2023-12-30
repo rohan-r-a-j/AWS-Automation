@@ -1,4 +1,5 @@
 @import "../node_modules/bootstrap/dist/css/bootstrap.css";
+
 :host {
   --bs-primary-rgb: 36, 46, 61;
 }
@@ -127,4 +128,7 @@ background-color: #ccc;
 }
 .active {
   border-bottom: solid 2px #888;
+}
+.dropdown-item:hover{
+  background-color:#444 !important;
 }

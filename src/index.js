@@ -9,6 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./error-page";
 import GetInstaceDetails from "./components/get-instance-details";
 import NavComponents from "./components/UI/Nav";
+import StateProvider from "./context/state";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 let router = createBrowserRouter([
@@ -16,7 +17,6 @@ let router = createBrowserRouter([
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-  
   },
   {
     path: "/get-instance-details",
@@ -24,12 +24,22 @@ let router = createBrowserRouter([
   },
 ]);
 
-console.log('INdex')
+console.log("INdex");
 root.render(
   <>
     {/* <React.StrictMode> */}
-    <NavComponents />
-      <RouterProvider fallbackElement={<><div>Loading...</div></>} router={router} />
+    <StateProvider>
+      <NavComponents />
+      <RouterProvider
+        fallbackElement={
+          <>
+            <div>Loading...</div>
+          </>
+        }
+        router={router}
+      />
+    </StateProvider>
+
     {/* </React.StrictMode> */}
   </>
 );

@@ -61,12 +61,14 @@ const GeoChart = ({data}) => (
     }
     projectionTranslation={[0.5, 0.5]}
     projectionRotation={[0, 0, 0]}
+    
     enableGraticule={true}
     graticuleLineColor="#dddddd"
     borderWidth={0.5}
     borderColor="#152538"
     projectionScale={100}
-    graticuleLineWidth={500}
+    graticuleLineWidth={800}
+
     defs={[
       {
         id: "dots",

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-
-import PieChartComponent from "./PieChart";
+import React, { useContext, useEffect, useState } from "react";
 import moment from "moment/moment";
-import GeoChart from "./GeoChart";
-import BarChart from "./BarChart";
-import { barChartKey, mapBarChartData, reorganizeCosts } from "../utils/utils";
+import CostCardComponent from "./CostCard";
+import ResourceUtilsComponent from "./ResourceUtils";
+import CostTrendComponent from "./CostTrend";
+import UserDetailsComponent from "./UserDetails";
+import Top7ServicesComponent from "./Top7Services";
+import CountryViewComponent from "./CountryView";
+import { StateContext } from "../context/state";
 let instanceConfig = [
   {
     label: "EC2 Instances",
@@ -32,10 +34,96 @@ let instanceConfig = [
     type: "s3",
   },
 ];
+let accountApiConfig = {
+  "051650638025": [
+    {
+      key: "ec2",
+      apiUrl:
+        "https://ea2o6hzj4u3afffie2hkfcnr6u0couos.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "eks_cluster",
+      apiUrl:
+        "https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "rds",
+      apiUrl:
+        "https://2kiedl7rgvlchcdhypekeioo2i0mgele.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "s3",
+      apiUrl:
+        "https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "top_7_service_data",
+      apiUrl:
+        "https://uiwbbi25clx4enlmvohblsszxa0pcqoa.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "reg_cost",
+      apiUrl:
+        "https://ux4rlttlwsceskaleaxzm5pyci0mqhua.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "compare_cost",
+      apiUrl:
+        "https://7oofpr4fxbh52maft7khgji72m0sxrmx.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "fetchuser",
+      apiUrl:
+        "https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/",
+    },
+  ],
+  388328004932: [
+    {
+      key: "ec2",
+      apiUrl:
+        "https://rjrze24z6imhpjxiovm56miu4u0ivssa.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "eks_cluster",
+      apiUrl:
+        "https://ltdzramvfc4tl2sqdexb26wnqy0uyegy.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "rds",
+      apiUrl:
+        "https://c6pdlv3dhexbqws4yvjs2dvcne0jcvsv.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "s3",
+      apiUrl:
+        "https://wmrk55bttl2oa3ewr4jrkq54fy0mdkun.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "top_7_service_data",
+      apiUrl:
+        "https://6vtwz5qinfrcovlir47gfutcm40remay.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "reg_cost",
+      apiUrl: "",
+    },
+    {
+      key: "compare_cost",
+      apiUrl:
+        "https://3ra33pjg3tychzzizbhprukyma0gtkro.lambda-url.us-east-1.on.aws/",
+    },
+    {
+      key: "fetchuser",
+      apiUrl:
+        "https://fxauudfplvvdqztn4ttox4i4be0udwbs.lambda-url.us-east-1.on.aws/",
+    },
+  ],
+};
 
 const Home = React.memo(() => {
+  let [state, dispatch] = useContext(StateContext);
   let [userData, setUserData] = useState({});
-  let [loading, setLoading] = useState(false);
+  // let [loading, setLoading] = useState(false);
   let [instances, setInstances] = useState({});
   let [resourceDetails, setResourceDetails] = useState({});
   let [costDetails, setCostDetails] = useState({});
@@ -43,55 +131,27 @@ const Home = React.memo(() => {
   let [costChartData, setCostChartData] = useState({});
   let [compareCostData, setCompareCostData] = useState({});
   let [tabIndex, setTabIndex] = useState(0);
-  function fetchUsers() {
-    // let instanceId =queryParams.get('instance_id')
-    let lambdaFunctionURL = `https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/`;
-    setLoading(true);
-    fetch(lambdaFunctionURL, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // Add any additional headers if needed,
-      },
-      // body:JSON.stringify({ instance_id: instanceId })
-    })
-      .then((response) => {
-        console.log(response);
-        return response.json();
-      })
-      .then((res) => {
-        setUserData(res);
-        console.log(res);
-        localStorage.setItem("users", JSON.stringify(res));
-        setLoading(false);
-        let date = new Date().toString();
-        localStorage.setItem("updatedAt", date);
-        setDate(date);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }
+  let [switchLoading, setSwitchLoading] = useState(false);
+  let [currentApiConfig, setCurrentApiConfig] = useState(
+    accountApiConfig[state.currentAccount]
+  );
 
   //   Total EKS- https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/
   // Total S3- https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/
   // Total RDS- https://2kiedl7rgvlchcdhypekeioo2i0mgele.lambda-url.us-east-1.on.aws/
-  function handleCardApiCall(action) {
+  function handleCardApiCall(action, setLoading) {
+    setLoading(true);
     switch (action) {
       case "ec2":
         console.log("Calling EC Fetch API");
-        fetch(
-          "https://ea2o6hzj4u3afffie2hkfcnr6u0couos.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -121,17 +181,14 @@ const Home = React.memo(() => {
 
       case "eks_cluster":
         console.log("Calling EKS Fetch API");
-        fetch(
-          "https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -160,17 +217,14 @@ const Home = React.memo(() => {
 
       case "rds":
         console.log("Calling RDS Fetch API");
-        fetch(
-          "https://2kiedl7rgvlchcdhypekeioo2i0mgele.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -200,17 +254,14 @@ const Home = React.memo(() => {
       case "s3":
         console.log("Calling S3 Fetch API");
         setLoading(true);
-        fetch(
-          "https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -240,17 +291,14 @@ const Home = React.memo(() => {
       case "top_7_service_data":
         console.log("Calling TOP-7 Services Cost Fetch API");
         setLoading(true);
-        fetch(
-          "https://uiwbbi25clx4enlmvohblsszxa0pcqoa.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -275,17 +323,14 @@ const Home = React.memo(() => {
       case "reg_cost":
         console.log("Calling Region Cost Fetch API");
         setLoading(true);
-        fetch(
-          "https://ux4rlttlwsceskaleaxzm5pyci0mqhua.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -302,7 +347,7 @@ const Home = React.memo(() => {
             setLoading(false);
           })
           .catch((err) => {
-            console.log(err);
+            console.log(err.toString());
             setLoading(false);
           });
         break;
@@ -310,17 +355,14 @@ const Home = React.memo(() => {
       case "compare_cost":
         console.log("Calling Compare Cost API");
         setLoading(true);
-        fetch(
-          "https://7oofpr4fxbh52maft7khgji72m0sxrmx.lambda-url.us-east-1.on.aws/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any additional headers if needed,
-            },
-            // body:JSON.stringify({ instance_id: instanceId })
-          }
-        )
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
           .then((response) => {
             console.log(response);
             return response.json();
@@ -341,6 +383,35 @@ const Home = React.memo(() => {
             setLoading(false);
           });
         break;
+      case "fetchuser":
+        console.log("Calling Compare Cost API");
+        setLoading(true);
+        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if needed,
+          },
+          // body:JSON.stringify({ instance_id: instanceId })
+        })
+          .then((response) => {
+            console.log(response);
+            return response.json();
+          })
+          .then((res) => {
+            setUserData(res);
+            console.log(res);
+            localStorage.setItem("users", JSON.stringify(res));
+            setLoading(false);
+            let date = new Date().toString();
+            localStorage.setItem("updatedAt", date);
+            setDate(date);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
+        break;
 
       default:
         break;
@@ -350,7 +421,7 @@ const Home = React.memo(() => {
     let lambdaFunURL =
       "https://ea2o6hzj4u3afffie2hkfcnr6u0couos.lambda-url.us-east-1.on.aws/";
 
-    setLoading(true);
+    // setLoading(true);
     fetch(lambdaFunURL, {
       method: "GET",
       headers: {
@@ -370,16 +441,21 @@ const Home = React.memo(() => {
         let date = new Date().toString();
         localStorage.setItem("updatedAt", date);
         setDate(date);
-        setLoading(false);
+        // setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false);
+        // setLoading(false);
       });
   };
   useEffect(() => {
     console.log("call effect");
-
+    if(localStorage.getItem('accountId')){
+      dispatch({
+        type: "changeAccount",
+        payload: { currentAccount: localStorage.getItem("accountId") },
+      });
+    }
     let users = JSON.parse(localStorage.getItem("users"));
     let instancesCount = JSON.parse(localStorage.getItem("instances"));
     let resources = JSON.parse(localStorage.getItem("resourceDetails"));
@@ -388,16 +464,18 @@ const Home = React.memo(() => {
     let costChart = JSON.parse(localStorage.getItem("costChartData"));
     let compCost = JSON.parse(localStorage.getItem("compareCostData"));
     if (compCost) setCompareCostData(compCost);
-    else handleCardApiCall("compare_cost");
+    else handleCardApiCall("compare_cost", setSwitchLoading);
     if (costChart) setCostChartData(costChart);
-    else handleCardApiCall("reg_cost");
+    else handleCardApiCall("reg_cost", setSwitchLoading);
     if (updatedAt) setDate(updatedAt);
     if (resources) setResourceDetails(resources);
     else {
-      instanceConfig.forEach((item) => handleCardApiCall(item.type));
+      instanceConfig.forEach((item) =>
+        handleCardApiCall(item.type, setSwitchLoading)
+      );
     }
     if (costs) setCostDetails(costs);
-    else handleCardApiCall("top_7_service_data");
+    else handleCardApiCall("top_7_service_data", setSwitchLoading);
     if (instancesCount) {
       setInstances(instancesCount);
     } else {
@@ -406,14 +484,146 @@ const Home = React.memo(() => {
     if (users) {
       setUserData(users);
     } else {
-      fetchUsers();
+      // fetchUsers();
+      handleCardApiCall("fetchuser", setSwitchLoading);
     }
-  }, []);
+  }, [currentApiConfig]);
+
+  useEffect(() => {
+    console.log("state change", state);
+    setSwitchLoading(true);
+    setCurrentApiConfig(accountApiConfig[state.currentAccount]);
+    if (!localStorage.getItem("accountId")) {
+      localStorage.setItem("accountId", state.currentAccount);
+      setSwitchLoading(false);
+    } else if (state.currentAccount !== localStorage.getItem("accountId")) {
+      localStorage.clear();
+      setSwitchLoading(false);
+    } else {
+      setSwitchLoading(false);
+      dispatch({
+        type: "changeAccount",
+        payload: { currentAccount: localStorage.getItem("accountId") },
+      });
+      
+    }
+  }, [state]);
+  let accountsConfig = {
+    "051650638025": [
+      {
+        component: (
+          <CostCardComponent
+            handleCardApiCall={handleCardApiCall}
+            costDetails={costDetails}
+          />
+        ),
+        colStyle: "col-6",
+      },
+      {
+        component: (
+          <ResourceUtilsComponent
+            resourceDetails={resourceDetails}
+            instances={instances}
+            handleCardApiCall={handleCardApiCall}
+            instanceConfig={instanceConfig}
+          />
+        ),
+        colStyle: "col-6",
+      },
+      {
+        component: (
+          <CostTrendComponent
+            tabIndex={tabIndex}
+            setTabIndex={setTabIndex}
+            compareCostData={compareCostData}
+            handleCardApiCall={handleCardApiCall}
+          />
+        ),
+        colStyle: "col-6",
+      },
+
+      {
+        component: (
+          <UserDetailsComponent
+            userData={userData}
+            handleCardApiCall={handleCardApiCall}
+          />
+        ),
+        colStyle: "col-6",
+      },
+      {
+        component: <Top7ServicesComponent costDetails={costDetails} />,
+        colStyle: "col-12",
+      },
+      {
+        component: <CountryViewComponent costChartData={costChartData} />,
+        colStyle: "col-12",
+      },
+    ],
+    388328004932: [
+      {
+        component: (
+          <CostCardComponent
+            handleCardApiCall={handleCardApiCall}
+            costDetails={costDetails}
+          />
+        ),
+        colStyle: "col-6",
+      },
+      {
+        component: (
+          <ResourceUtilsComponent
+            resourceDetails={resourceDetails}
+            instances={instances}
+            handleCardApiCall={handleCardApiCall}
+            instanceConfig={instanceConfig}
+          />
+        ),
+        colStyle: "col-6",
+      },
+      {
+        component: (
+          <CostTrendComponent
+            tabIndex={tabIndex}
+            setTabIndex={setTabIndex}
+            compareCostData={compareCostData}
+            handleCardApiCall={handleCardApiCall}
+          />
+        ),
+        colStyle: "col-6",
+      },
+
+      {
+        component: (
+          <UserDetailsComponent
+            userData={userData}
+            handleCardApiCall={handleCardApiCall}
+          />
+        ),
+        colStyle: "col-6",
+      },
+    ],
+  };
+
+  if (switchLoading) return <h1>Loading</h1>;
   return (
     <>
       <br />
       <div className="d-flex px-5 flex-row justify-content-between align-items-center">
-        <h2 style={{fontFamily:"sans-serif", fontWeight:"bolder", fontSize: "1.8rem",border:'none',color:"#244",letterSpacing:'4px',borderBottom:"solid 5px rgba(95, 30, 190, 1)"}}> Admin Dashboard</h2>
+        <h2
+          style={{
+            fontFamily: "sans-serif",
+            fontWeight: "bolder",
+            fontSize: "1.8rem",
+            border: "none",
+            color: "#244",
+            letterSpacing: "4px",
+            borderBottom: "solid 5px rgba(95, 30, 190, 1)",
+          }}
+        >
+          {" "}
+          Admin Dashboard
+        </h2>
         <span style={{ color: "#444" }}>
           Last Updated: <b>{moment(new Date(date)).fromNow()}</b>
         </span>
@@ -421,571 +631,45 @@ const Home = React.memo(() => {
       <br />
       <div className="container d-flex justify-content-center align-items-center">
         <div className="row  row-gap-3">
-          <div className="col-6">
-            <div
-              className="card"
-              style={{ width: "100%", height: "100%", aspectRatio: 4 / 3 }}
-            >
-              {/* <img src="..." class="card-img-top" alt="..." /> */}
-
-              <div className="card" style={{ height: "100%" }}>
-                <div className="card-body">
-                  <div className="d-flex flex-row justify-content-between">
-                    <div
-                      style={{
-                        fontWeight: 100,
-                        fontSize: "2rem",
-                        backgroundColor: "#eee",
-                        display: "inline",
-                        padding: "0rem 0.4rem",
-                        borderRadius: 5,
-                        borderTop: "none",
-                        borderLeft: "none",
-                        borderRight: "none",
-                        borderBottom: "solid 2px #444",
-                      }}
-                    >
-                      Total cost Till Date
-                    </div>
-                    <button
-                      onClick={() => handleCardApiCall("top_7_service_data")}
-                      type="button"
-                      className="btn "
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={20}
-                        fill="currentColor"
-                        className={
-                          "bi bi-arrow-repeat " + (loading ? "rotate" : "")
-                        }
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                        <path
-                          fillRule="evenodd"
-                          d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
-
-                  <hr />
-
-                  <div
-                    className="card-text text-center"
-                    style={{
-                      fontSize: "4rem",
-                      fontFamily: "sans-serif",
-                      fontWeight: "bolder",
-                      textDecoration: "underline",
-                      color: "#d70",
-                    }}
-                  >
-                    $
-                    {Number(costDetails["Current Month-to-Date Cost"]).toFixed(
-                      2
-                    )}
-                  </div>
-                </div>
-
-                <div className="card-body">
-                  <div
-                    style={{
-                      fontWeight: 100,
-                      fontSize: "2rem",
-                      backgroundColor: "#eee",
-                      display: "inline",
-                      padding: "0rem 0.4rem",
-                      borderRadius: 5,
-                      borderTop: "none",
-                      borderLeft: "none",
-                      borderRight: "none",
-                      borderBottom: "solid 2px #444",
-                    }}
-                  >
-                    Estimated Cost for the Month
-                  </div>
-                  <hr />
-
-                  <div
-                    className="card-text text-center"
-                    style={{
-                      fontSize: "4rem",
-                      fontFamily: "monospace",
-                      fontWeight: "bolder",
-                      textDecoration: "underline",
-                      color: "#727",
-                    }}
-                  >
-                    $
-                    {Number(
-                      costDetails["Forecasted Total Cost for the Month"]
-                    ).toFixed(2)}
-                  </div>
-                </div>
-
-                <div className="d-grid"></div>
-              </div>
+          {accountsConfig[state.currentAccount].map((item, i) => (
+            <div key={i} className={item.colStyle}>
+              {item.component}
             </div>
+          ))}
+          {/* <div className="col-6">
+            <CostCardComponent
+              loading={loading}
+              handleCardApiCall={handleCardApiCall}
+              costDetails={costDetails}
+            />
           </div>
           <div className="col-6">
-            <div
-              className="card"
-              style={{ width: "100%", height: "100%", aspectRatio: 4 / 3 }}
-            >
-              {/* <img src="..." class="card-img-top" alt="..." /> */}
-              <div className="card-body d-flex flex-column justify-content-between ">
-                <div className="d-flex flex-row justify-content-between align-items-center">
-                  <h5 className="card-title">
-                   Resource Utilization Overview
-                  </h5>
-                  <button
-                    onClick={findInstanceCount}
-                    type="button"
-                    className="btn "
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={20}
-                      fill="currentColor"
-                      className={
-                        "bi bi-arrow-repeat " + (loading ? "rotate" : "")
-                      }
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                      <path
-                        fillRule="evenodd"
-                        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="row row-gap-2 custom-row">
-                  {instanceConfig.map((item) => (
-                    <div key={item.label} className="col-6">
-                      {" "}
-                      <div
-                        className={
-                          "card " + [item.flip ? "flip" : ""].join(" ")
-                        }
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          aspectRatio: 4 / 3,
-                        }}
-                      >
-                        <button
-                          onClick={() => handleCardApiCall(item.type)}
-                          type="button"
-                          className="btn "
-                          style={{
-                            position: "absolute",
-                            bottom: 0,
-                            right: 0,
-                            zIndex: 3,
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={20}
-                            fill="currentColor"
-                            className={
-                              "bi bi-arrow-repeat " + (loading ? "rotate" : "")
-                            }
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                            <path
-                              fillRule="evenodd"
-                              d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
-                            ></path>
-                          </svg>
-                        </button>
-                        <div className="flip-inner">
-                          <div
-                            className={
-                              "card-body " +
-                              [item.flip ? "front" : ""].join(" ")
-                            }
-                          >
-                            <div
-                              className={
-                                "text-center " + item.classNames.join(" ")
-                              }
-                              style={{ fontSize: "5rem", fontWeight: "bold" }}
-                            >
-                              {resourceDetails[item.dataKey.toString()]}
-                            </div>
-                            <h4 className="text-center">{item.label}</h4>
-                          </div>
-                          {item.flip && (
-                            <div className="card-body back">
-                              <div
-                                className="d-flex flex-column justify-content-center align-items-center"
-                                style={{ width: "100%", height: "100%" }}
-                              >
-                                <div className="card p-2">
-                                  <h3 className="text-success">
-                                    Running: {instances["Running EC2"]}
-                                  </h3>
-
-                                  <h3 className="text-danger">
-                                    Stopped: {instances["Stopped EC2"]}
-                                  </h3>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* <div className="col-6">
-                  <div
-                    className="card"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      aspectRatio: 4 / 3,
-                    }}
-                  >
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="text-center text-warning "
-                        style={{ fontSize: "5rem", fontWeight: "bold" }}
-                      >
-                        10{" "}
-                      </div>
-                      <h4 className="text-center">EKS Cluster</h4>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div
-                    className="card"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      aspectRatio: 4 / 3,
-                    }}
-                  >
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="text-center text-success "
-                        style={{ fontSize: "5rem", fontWeight: "bold" }}
-                      >
-                        10{" "}
-                      </div>
-                      <h4 className="text-center">RDS Instances</h4>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div
-                    className="card"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      aspectRatio: 4 / 3,
-                    }}
-                  >
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="text-center text-danger "
-                        style={{ fontSize: "5rem", fontWeight: "bold" }}
-                      >
-                        10{" "}
-                      </div>
-                      <h4 className="text-center">S3 Buckets</h4>
-                    </div>
-                  </div>
-                </div> */}
-                </div>
-              </div>
-            </div>
+            <ResourceUtilsComponent
+              resourceDetails={resourceDetails}
+              instances={instances}
+              handleCardApiCall={handleCardApiCall}
+              findInstanceCount={findInstanceCount}
+              instanceConfig={instanceConfig}
+              loading={loading}
+            />
           </div>
           <div className="col-6">
-            <div
-              className="card"
-              style={{ width: "100%", height: "100%", aspectRatio: 4 / 3 }}
-            >
-              {/* <img src="..." class="card-img-top" alt="..." /> */}
-
-              <div className="card-body d-flex flex-column justify-content-between">
-                <h3 className="card-title">Monthly Cost Trend</h3>
-                <div className="d-flex flex-row justify-content-start">
-                  <span
-                    onClick={() => setTabIndex(0)}
-                    className={
-                      "tab " + [tabIndex == 0 ? "active" : ""].join(" ")
-                    }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-bar-chart-line-fill"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
-                    </svg>
-                  </span>
-                  <span
-                    onClick={() => setTabIndex(1)}
-                    className={
-                      "tab " + [tabIndex == 1 ? "active" : ""].join(" ")
-                    }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-table"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z" />
-                    </svg>
-                  </span>
-                </div>
-                {tabIndex === 0 && <BarChart data={compareCostData} />}
-                {tabIndex == 1 && (
-                  <table
-                    style={{ overflowX: "scroll", maxWidth: "100%" }}
-                    className="table table-sm table-striped table-bordered border-primary"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">Services</th>
-                        {Object.keys(compareCostData).map((item, index) => (
-                          <th key={index} scope="col">
-                            {item}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody  className="table-group-divider">
-                      {["Total Cost", ...barChartKey(compareCostData)].map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <th scope="row">{item}</th>
-                            {Object.values(
-                              reorganizeCosts(compareCostData)[item]
-                            ).map((value, index) => (
-                              <td key={index}>{value}</td>
-                            ))}
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                )}
-                <div className="d-grid"></div>
-              </div>
-            </div>
+            <CostTrendComponent
+              tabIndex={tabIndex}
+              setTabIndex={setTabIndex}
+              compareCostData={compareCostData}
+              loading={loading}
+            />
           </div>
           <div className="col-6">
-            <div
-              className="card"
-              style={{ width: "100%", height: "100%", aspectRatio: 4 / 3 }}
-            >
-              {/* <img src="..." class="card-img-top" alt="..." /> */}
-              <div className="card-body d-flex flex-column justify-content-between ">
-                <div className="d-flex flex-row justify-content-between align-items-center">
-                  <h3
-                    style={{ textDecoration: "underline" }}
-                    className="card-title"
-                  >
-                    User Details
-                  </h3>
-                  <button onClick={fetchUsers} type="button" className="btn ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={20}
-                      fill="currentColor"
-                      className={
-                        "bi bi-arrow-repeat " + (loading ? "rotate" : "")
-                      }
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
-                      <path
-                        fillRule="evenodd"
-                        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-
-                {/* <hr /> */}
-                <div className="row row-gap-2 custom-row">
-                  <div className="col-6">
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="text-center text-primary "
-                        style={{ fontSize: "5rem", fontWeight: "bold" }}
-                      >
-                        {userData.TotalUsers}
-                      </div>
-                      <h4 className="text-center">Total Users</h4>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="card"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          aspectRatio: 4 / 3,
-                        }}
-                      >
-                        <div
-                          className="text-center text-warning "
-                          style={{ fontSize: "5rem", fontWeight: "bold" }}
-                        >
-                          {userData.NonMFAUsers}{" "}
-                        </div>
-                        <h4 className="text-center">Non MFA Users</h4>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="card"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          aspectRatio: 4 / 3,
-                        }}
-                      >
-                        <div
-                          className="text-center text-success "
-                          style={{ fontSize: "5rem", fontWeight: "bold" }}
-                        >
-                          {userData.InactiveUsers}{" "}
-                        </div>
-                        <h4 className="text-center">Inactive Users</h4>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div
-                      className="card"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        aspectRatio: 4 / 3,
-                      }}
-                    >
-                      <div
-                        className="card"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          aspectRatio: 4 / 3,
-                        }}
-                      >
-                        <div
-                          className="text-center text-danger "
-                          style={{ fontSize: "5rem", fontWeight: "bold" }}
-                        >
-                          {userData.AdminUsers}{" "}
-                        </div>
-                        <h4 className="text-center">Admin Users</h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <UserDetailsComponent userData={userData} fetchUsers={fetchUsers} />
           </div>
           <div className="col-12">
-            <div
-              className="card"
-              style={{ width: "100%", height: "100%", aspectRatio: 16 / 8 }}
-            >
-              <div className="card-body">
-                <h2 className="text-center">Top 7 Cost-Incurring Services</h2>
-              </div>
-              <PieChartComponent
-                chartData={
-                  costDetails["Top 7 Cost-Incurring Services"]
-                    ? costDetails["Top 7 Cost-Incurring Services"]
-                    : []
-                }
-              />
-            </div>
+            <Top7ServicesComponent costDetails={costDetails} />
           </div>
           <div className="col-12">
-            <div
-              className="card"
-              style={{ width: "100%", height: "100%", aspectRatio: 16 / 8 }}
-            >
-              <div
-                style={{ height: "100%" }}
-                className="d-flex flex-row justify-content-end"
-              >
-                <div style={{ width: "60%", height: "100%" }} className="col-8">
-                  <GeoChart
-                    data={
-                      costChartData["Country Costs"]
-                        ? costChartData["Country Costs"]
-                        : {}
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+            <CountryViewComponent costChartData={costChartData} />
+          </div> */}
         </div>
       </div>
     </>
