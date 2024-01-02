@@ -7,6 +7,9 @@ import UserDetailsComponent from "./UserDetails";
 import Top7ServicesComponent from "./Top7Services";
 import CountryViewComponent from "./CountryView";
 import { StateContext } from "../context/state";
+let token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZWNmMjkzMTEzOWUzYWVjYTE4Y2MiLCJpYXQiOjE3MDQxOTMzMTIsImV4cCI6MTcwNDM2NjExMn0.AQIScGTNYo314R1MoV2RTN3VRZm5vbh_rQoAhqy-IWA";
+let nodeApi = "http://localhost:3000/aws/lambda/run";
 let instanceConfig = [
   {
     label: "EC2 Instances",
@@ -132,9 +135,7 @@ const Home = React.memo(() => {
   let [compareCostData, setCompareCostData] = useState({});
   let [tabIndex, setTabIndex] = useState(0);
   let [switchLoading, setSwitchLoading] = useState(false);
-  let [currentApiConfig, setCurrentApiConfig] = useState(
-    accountApiConfig[state.currentAccount]
-  );
+  let [currentApiConfig, setCurrentApiConfig] = useState(state.currentAccount);
 
   //   Total EKS- https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/
   // Total S3- https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/
@@ -144,13 +145,14 @@ const Home = React.memo(() => {
     switch (action) {
       case "ec2":
         console.log("Calling EC Fetch API");
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -181,13 +183,14 @@ const Home = React.memo(() => {
 
       case "eks_cluster":
         console.log("Calling EKS Fetch API");
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -217,13 +220,14 @@ const Home = React.memo(() => {
 
       case "rds":
         console.log("Calling RDS Fetch API");
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -254,13 +258,14 @@ const Home = React.memo(() => {
       case "s3":
         console.log("Calling S3 Fetch API");
         setLoading(true);
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -291,13 +296,14 @@ const Home = React.memo(() => {
       case "top_7_service_data":
         console.log("Calling TOP-7 Services Cost Fetch API");
         setLoading(true);
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -323,13 +329,14 @@ const Home = React.memo(() => {
       case "reg_cost":
         console.log("Calling Region Cost Fetch API");
         setLoading(true);
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -355,13 +362,14 @@ const Home = React.memo(() => {
       case "compare_cost":
         console.log("Calling Compare Cost API");
         setLoading(true);
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -386,13 +394,14 @@ const Home = React.memo(() => {
       case "fetchuser":
         console.log("Calling Compare Cost API");
         setLoading(true);
-        fetch(currentApiConfig.find((item) => item.key === action).apiUrl, {
-          method: "GET",
+        fetch(nodeApi, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: token,
             // Add any additional headers if needed,
           },
-          // body:JSON.stringify({ instance_id: instanceId })
+          body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
             console.log(response);
@@ -423,9 +432,10 @@ const Home = React.memo(() => {
 
     // setLoading(true);
     fetch(lambdaFunURL, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
+        authorization: token,
         // Add any additional headers if needed,
       },
       // body:JSON.stringify({ instance_id: instanceId })
@@ -450,7 +460,7 @@ const Home = React.memo(() => {
   };
   useEffect(() => {
     console.log("call effect");
-    if(localStorage.getItem('accountId')){
+    if (localStorage.getItem("accountId")) {
       dispatch({
         type: "changeAccount",
         payload: { currentAccount: localStorage.getItem("accountId") },
@@ -476,11 +486,7 @@ const Home = React.memo(() => {
     }
     if (costs) setCostDetails(costs);
     else handleCardApiCall("top_7_service_data", setSwitchLoading);
-    if (instancesCount) {
-      setInstances(instancesCount);
-    } else {
-      findInstanceCount();
-    }
+
     if (users) {
       setUserData(users);
     } else {
@@ -490,22 +496,19 @@ const Home = React.memo(() => {
   }, [currentApiConfig]);
 
   useEffect(() => {
-    console.log("state change", state);
+    console.log("state change", state, localStorage.getItem("accountId"));
     setSwitchLoading(true);
-    setCurrentApiConfig(accountApiConfig[state.currentAccount]);
+    setCurrentApiConfig(state.currentAccount);
     if (!localStorage.getItem("accountId")) {
       localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);
     } else if (state.currentAccount !== localStorage.getItem("accountId")) {
+      alert("clearing localstorage");
       localStorage.clear();
+      localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);
     } else {
       setSwitchLoading(false);
-      dispatch({
-        type: "changeAccount",
-        payload: { currentAccount: localStorage.getItem("accountId") },
-      });
-      
     }
   }, [state]);
   let accountsConfig = {

@@ -10,7 +10,7 @@ export default function NavComponents(props) {
       type: "changeAccount",
       payload: { currentAccount: currentAccount.toString() },
     });
-    localStorage.setItem("accountId", currentAccount.toString());
+    // localStorage.setItem("accountId", currentAccount.toString());
   }
   return (
     <nav className="navbar navbar-expand-lg bg-primary">
