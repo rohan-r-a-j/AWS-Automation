@@ -8,6 +8,8 @@ function CostTrendComponent({
   handleCardApiCall,
 }) {
   let [loading, setLoading] = useState(false);
+  let [orgcost, setOrgCost] = useState(reorganizeCosts(compareCostData));
+  let [keys, setKeys] = useState(Object.keys(compareCostData));
 
   return (
     <div
@@ -93,11 +95,9 @@ function CostTrendComponent({
                 (item, index) => (
                   <tr key={index}>
                     <th scope="row">{item}</th>
-                    {Object.values(reorganizeCosts(compareCostData)[item]).map(
-                      (value, index) => (
-                        <td key={index}>{value}</td>
-                      )
-                    )}
+                    {keys.map((month, index) => (
+                      <td key={index}>{orgcost[item][month]}</td>
+                    ))}
                   </tr>
                 )
               )}

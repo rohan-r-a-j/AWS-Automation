@@ -52,6 +52,12 @@ export function reorganizeCosts(data) {
         organizedData[service] = {};
       }
       organizedData[service][month] = monthData[service];
+      let monthKeys = Object.keys(data)
+      for (let i = 0; i < monthKeys.length; i++) {
+        if (organizedData[service][monthKeys[i]] === undefined) {
+          organizedData[service][monthKeys[i]] = "-";
+        }
+      }
     }
   }
 
