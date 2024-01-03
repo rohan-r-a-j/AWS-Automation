@@ -137,6 +137,7 @@ const Home = React.memo(() => {
   let [switchLoading, setSwitchLoading] = useState(false);
   let [currentApiConfig, setCurrentApiConfig] = useState(state.currentAccount);
   let [token, setToken] = useState(state.token);
+  let [lodingContext, setLoadingContext] = useState({});
 
   //   Total EKS- https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/
   // Total S3- https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/
@@ -146,6 +147,7 @@ const Home = React.memo(() => {
     switch (action) {
       case "ec2":
         console.log("Calling EC Fetch API");
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -175,15 +177,18 @@ const Home = React.memo(() => {
             localStorage.setItem("updatedAt", date);
             setDate(date);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "eks_cluster":
         console.log("Calling EKS Fetch API");
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -212,15 +217,18 @@ const Home = React.memo(() => {
             console.log(res);
             //   localStorage.setItem("instances", JSON.stringify(res));
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "rds":
         console.log("Calling RDS Fetch API");
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -249,15 +257,18 @@ const Home = React.memo(() => {
             localStorage.setItem("updatedAt", date);
             setDate(date);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "s3":
         console.log("Calling S3 Fetch API");
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         setLoading(true);
         fetch(nodeApi, {
           method: "POST",
@@ -287,16 +298,19 @@ const Home = React.memo(() => {
             console.log(res);
             //   localStorage.setItem("instances", JSON.stringify(res));
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "top_7_service_data":
         console.log("Calling TOP-7 Services Cost Fetch API");
         setLoading(true);
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -320,16 +334,19 @@ const Home = React.memo(() => {
             localStorage.setItem("updatedAt", date);
             setDate(date);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "reg_cost":
         console.log("Calling Region Cost Fetch API");
         setLoading(true);
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -353,16 +370,19 @@ const Home = React.memo(() => {
             localStorage.setItem("updatedAt", date);
             setDate(date);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err.toString());
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "compare_cost":
         console.log("Calling Compare Cost API");
         setLoading(true);
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -386,15 +406,18 @@ const Home = React.memo(() => {
             localStorage.setItem("updatedAt", date);
             setDate(date);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
       case "fetchuser":
         console.log("Calling Compare Cost API");
         setLoading(true);
+        setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
           headers: {
@@ -416,10 +439,12 @@ const Home = React.memo(() => {
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
             setDate(date);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
@@ -513,6 +538,7 @@ const Home = React.memo(() => {
       setSwitchLoading(false);
     }
   }, [currentAccount]);
+
   let accountsConfig = {
     "051650638025": [
       {
@@ -523,6 +549,7 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: "top_7_service_data",
       },
       {
         component: (
@@ -534,6 +561,7 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: ["ec2", "rds", "eks", "s3"],
       },
       {
         component: (
@@ -545,6 +573,7 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: "compare_cost",
       },
 
       {
@@ -555,14 +584,17 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: "fetchuser",
       },
       {
         component: <Top7ServicesComponent costDetails={costDetails} />,
         colStyle: "col-12",
+        dataKey: "top_7_service_data",
       },
       {
         component: <CountryViewComponent costChartData={costChartData} />,
         colStyle: "col-12",
+        dataKey: "reg_cost",
       },
     ],
     388328004932: [
@@ -574,6 +606,7 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: "top_7_service_data",
       },
       {
         component: (
@@ -585,6 +618,7 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: ["ec2", "rds", "eks", "s3"],
       },
       {
         component: (
@@ -596,6 +630,7 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: "compare_cost",
       },
 
       {
@@ -606,11 +641,22 @@ const Home = React.memo(() => {
           />
         ),
         colStyle: "col-6",
+        dataKey: "fetchuser",
+      },
+      {
+        component: <Top7ServicesComponent costDetails={costDetails} />,
+        colStyle: "col-12",
+        dataKey: "top_7_service_data",
+      },
+      {
+        component: <CountryViewComponent costChartData={costChartData} />,
+        colStyle: "col-12",
+        dataKey: "reg_cost",
       },
     ],
   };
 
-  if (switchLoading) return <h1>Loading</h1>;
+  // if (switchLoading) return <h1>Loading</h1>;
   return (
     <>
       <br />
@@ -636,11 +682,84 @@ const Home = React.memo(() => {
       <br />
       <div className="container d-flex justify-content-center align-items-center">
         <div className="row  row-gap-3">
-          {accountsConfig[state.currentAccount].map((item, i) => (
-            <div key={i} className={item.colStyle}>
-              {item.component}
-            </div>
-          ))}
+          {accountsConfig[state.currentAccount].map((item, i) =>
+            (item.dataKey instanceof Array &&
+              item.dataKey.some((item) => lodingContext[item])) ||
+            lodingContext[item.dataKey] ? (
+              <div className={item.colStyle} key={i}>
+                {item.dataKey instanceof Array ? (
+                  <div className="card-body">
+                    <div className="row">
+                      {item.dataKey.map((item) => (
+                        <div className="col-6 placeholder-wave">
+                          <h5 className="card-title placeholder-wave">
+                            <span
+                              style={{ minHeight: "3rem !important" }}
+                              className="placeholder col-6"
+                            ></span>
+                          </h5>
+                          <p className="card-text placeholder-wave">
+                            <span className="placeholder col-4"></span>
+
+                            <span className="placeholder col-8"></span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="card"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      aspectRatio: 4 / 3,
+                    }}
+                    key={i}
+                    aria-hidden="true"
+                  >
+                    <div className="card-body">
+                      <h5 className="card-title placeholder-wave">
+                        <span
+                          style={{ minHeight: "3rem !important" }}
+                          className="placeholder col-6"
+                        ></span>
+                      </h5>
+                      <p className="card-text placeholder-wave">
+                        <span className="placeholder col-4"></span>
+
+                        <span className="placeholder col-8"></span>
+                      </p>
+                      <p className="card-text placeholder-wave">
+                        <span className="placeholder col-4"></span>
+
+                        <span className="placeholder col-8"></span>
+                      </p>
+                      <p className="card-text placeholder-wave">
+                        <span className="placeholder col-4"></span>
+
+                        <span className="placeholder col-8"></span>
+                      </p>
+                      <p className="card-text placeholder-wave">
+                        <span className="placeholder col-4"></span>
+
+                        <span className="placeholder col-8"></span>
+                      </p>
+                      <p className="card-text placeholder-wave">
+                        <span className="placeholder col-4"></span>
+
+                        <span className="placeholder col-8"></span>
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div key={i} className={item.colStyle}>
+                {item.component}
+              </div>
+            )
+          )}
           {/* <div className="col-6">
             <CostCardComponent
               loading={loading}

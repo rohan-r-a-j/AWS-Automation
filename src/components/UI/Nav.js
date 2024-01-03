@@ -9,7 +9,10 @@ export default function NavComponents(props) {
   let { token } = state;
 
   useEffect(() => {
-
+    dispatch({
+      type: "updateToken",
+      payload: { token: sessionStorage.getItem("token") },
+    });
   }, [token]);
 
   function handleClick(currentAccount) {
@@ -19,6 +22,7 @@ export default function NavComponents(props) {
     });
     // localStorage.setItem("accountId", currentAccount.toString());
   }
+  useEffect(() => {});
   return (
     <nav className="navbar navbar-expand-lg bg-primary">
       <div className="container-fluid ">
