@@ -10,7 +10,7 @@ import { scaleQuantize } from 'd3-scale';
 const colorScale = scaleQuantize()
   .domain([0, 1000]) // Your domain from the minimum to maximum value
   .range([
-    '#00ff00', // Green for 0-50
+    '#0f04', // Green for 0-50
     '#bfff00', // Lighter green for 50-100
     '#ffff00', // Yellow for 100-400
     '#ff8000', // Orange for 400-600

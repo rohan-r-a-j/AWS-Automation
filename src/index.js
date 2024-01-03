@@ -15,13 +15,27 @@ import GetInstaceDetails from "./components/get-instance-details";
 import NavComponents from "./components/UI/Nav";
 import StateProvider from "./context/state";
 import Login from "./components/Login";
+import UserMgmt from "./components/UserMgmt";
+import AddUser from "./components/AddUser";
 
 let authHandler = () => {
   let token = sessionStorage.getItem("token");
   if (!token) {
     throw redirect("/login");
   }
-  return{}
+  return {};
+};
+let rootHandler = () => {
+  let token = sessionStorage.getItem("token");
+  let user = JSON.parse(sessionStorage.getItem("user"));
+
+  if (!token) {
+    throw redirect("/login");
+  } else if (user.type !== "root") {
+    console.log("roothandler", user);
+    throw redirect("/");
+  }
+  return {};
 };
 const root = ReactDOM.createRoot(document.getElementById("root"));
 let router = createBrowserRouter([
@@ -40,6 +54,8 @@ let router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  { path: "/manage/user", element: <UserMgmt />, loader: rootHandler },
+  { path: "/manage/user/add", element: <AddUser />, loader: rootHandler },
 ]);
 
 console.log("INdex");
@@ -68,4 +84,4 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-export let navigate=router.navigate
+export let navigate = router.navigate;

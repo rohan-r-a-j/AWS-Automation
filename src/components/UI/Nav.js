@@ -1,18 +1,38 @@
 import { useContext, useEffect, useState } from "react";
 import { StateContext } from "../../context/state";
 import { navigate } from "../..";
+import { Link } from "react-router-dom";
 
 export default function NavComponents(props) {
   const [currentAccountIndex, setCurrentAccountIndex] = useState(0);
 
   let [state, dispatch] = useContext(StateContext);
-  let { token } = state;
+  let { token, user } = state;
 
   useEffect(() => {
-    dispatch({
-      type: "updateToken",
-      payload: { token: sessionStorage.getItem("token") },
-    });
+    if (!token) {
+      dispatch({
+        type: "updateToken",
+        payload: { token: sessionStorage.getItem("token") },
+      });
+    }
+    fetch("http://localhost:3000/auth", {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: sessionStorage.getItem("token"),
+        // Add any additional headers if needed,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: "loggedInUser",
+          payload: { user: data },
+        });
+        sessionStorage.setItem("user", JSON.stringify(data));
+        console.log("user", data);
+      })
+      .catch((err) => console.error(err));
   }, [token]);
 
   function handleClick(currentAccount) {
@@ -22,7 +42,6 @@ export default function NavComponents(props) {
     });
     // localStorage.setItem("accountId", currentAccount.toString());
   }
-  useEffect(() => {});
   return (
     <nav className="navbar navbar-expand-lg bg-primary">
       <div className="container-fluid ">
@@ -68,15 +87,30 @@ export default function NavComponents(props) {
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 ">
-              <li className="nav-item">
-                <a
-                  className="nav-link text-light active"
-                  aria-current="page"
-                  href="#"
-                >
-                  Home
-                </a>
-              </li>
+              {token && (
+                <li className="nav-item">
+                  <div
+                    className="nav-link text-light"
+                    aria-current="page"
+                    onClick={() => navigate("/")}
+                    role="button"
+                  >
+                    Dashboard
+                  </div>
+                </li>
+              )}
+              {user?.type === "root" && token && (
+                <li className="nav-item">
+                  <div
+                    className="nav-link text-light "
+                    aria-current="page"
+                    role="button"
+                    onClick={() => navigate("/manage/user")}
+                  >
+                    Users
+                  </div>
+                </li>
+              )}
             </ul>
             {/* <form className="d-flex" role="search">
               <input
@@ -126,9 +160,14 @@ export default function NavComponents(props) {
             {token && (
               <button
                 onClick={() => {
-                  sessionStorage.removeItem("token");
-                  navigate("/login");
+                  dispatch({
+                    type: "loggedInUser",
+                    payload: { user: null },
+                  });
                   dispatch({ type: "updateToken", payload: { token: null } });
+                  sessionStorage.removeItem("token");
+                  sessionStorage.removeItem("user");
+                  navigate("/login");
                 }}
                 className="btn bnt-outline"
               >

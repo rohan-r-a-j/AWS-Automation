@@ -11,6 +11,9 @@ function reducer(state, action) {
     case "updateToken":
       return { ...state, token: action.payload.token };
       break;
+    case "loggedInUser":
+      return { ...state, user: action.payload.user };
+      break;
     default:
       return state;
       break;
@@ -19,6 +22,7 @@ function reducer(state, action) {
 let initialState = {
   currentAccount: localStorage.getItem("accountId") || "051650638025",
   token: null,
+  user: null,
 };
 export default function StateProvider({ children }) {
   let [state, dispatch] = useReducer(reducer, initialState);
