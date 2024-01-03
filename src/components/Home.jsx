@@ -7,8 +7,7 @@ import UserDetailsComponent from "./UserDetails";
 import Top7ServicesComponent from "./Top7Services";
 import CountryViewComponent from "./CountryView";
 import { StateContext } from "../context/state";
-let token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZWNmMjkzMTEzOWUzYWVjYTE4Y2MiLCJpYXQiOjE3MDQxOTMzMTIsImV4cCI6MTcwNDM2NjExMn0.AQIScGTNYo314R1MoV2RTN3VRZm5vbh_rQoAhqy-IWA";
+
 let nodeApi = "http://localhost:3000/aws/lambda/run";
 let instanceConfig = [
   {
@@ -125,6 +124,7 @@ let accountApiConfig = {
 
 const Home = React.memo(() => {
   let [state, dispatch] = useContext(StateContext);
+  let { currentAccount } = state;
   let [userData, setUserData] = useState({});
   // let [loading, setLoading] = useState(false);
   let [instances, setInstances] = useState({});
@@ -136,6 +136,7 @@ const Home = React.memo(() => {
   let [tabIndex, setTabIndex] = useState(0);
   let [switchLoading, setSwitchLoading] = useState(false);
   let [currentApiConfig, setCurrentApiConfig] = useState(state.currentAccount);
+  let [token, setToken] = useState(state.token);
 
   //   Total EKS- https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/
   // Total S3- https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/
@@ -459,6 +460,7 @@ const Home = React.memo(() => {
       });
   };
   useEffect(() => {
+    setToken(sessionStorage.getItem("token"));
     console.log("call effect");
     if (localStorage.getItem("accountId")) {
       dispatch({
@@ -510,7 +512,7 @@ const Home = React.memo(() => {
     } else {
       setSwitchLoading(false);
     }
-  }, [state]);
+  }, [currentAccount]);
   let accountsConfig = {
     "051650638025": [
       {

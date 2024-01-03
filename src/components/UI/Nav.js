@@ -1,9 +1,16 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StateContext } from "../../context/state";
+import { navigate } from "../..";
 
 export default function NavComponents(props) {
   const [currentAccountIndex, setCurrentAccountIndex] = useState(0);
+
   let [state, dispatch] = useContext(StateContext);
+  let { token } = state;
+
+  useEffect(() => {
+
+  }, [token]);
 
   function handleClick(currentAccount) {
     dispatch({
@@ -67,7 +74,7 @@ export default function NavComponents(props) {
                 </a>
               </li>
             </ul>
-            <form className="d-flex" role="search">
+            {/* <form className="d-flex" role="search">
               <input
                 className="form-control me-2"
                 type="search"
@@ -77,34 +84,53 @@ export default function NavComponents(props) {
               <button className="btn btn-outline-light" type="submit">
                 Search
               </button>
-            </form>
+            </form> */}
             <div className="d-flex flex-row align-items-center mx-2">
               {/* <h6 className="text-light" style={{margin:0}}>AWS ID: 051650638025</h6> */}
-              <div className="nav-item dropdown">
-                <a
-                  className="nav-link text-light dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  
-                >
-                  AWS ID: <span style={{ fontWeight: "900", fontFamily: "monospace" }}> {state.currentAccount}</span>
-                </a>
-                <ul className="dropdown-menu bg-primary">
-                  <li onClick={() => handleClick("051650638025")}>
-                    <a className="dropdown-item text-light" href="#">
-                      AWS ID: 051650638025
-                    </a>
-                  </li>
-                  <li onClick={() => handleClick("388328004932")}>
-                    <a className="dropdown-item text-light" href="#">
-                      AWS ID: 388328004932
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              {token && (
+                <div className="nav-item dropdown">
+                  <a
+                    className="nav-link text-light dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    AWS ID:{" "}
+                    <span
+                      style={{ fontWeight: "900", fontFamily: "monospace" }}
+                    >
+                      {" "}
+                      {state.currentAccount}
+                    </span>
+                  </a>
+                  <ul className="dropdown-menu bg-primary">
+                    <li onClick={() => handleClick("051650638025")}>
+                      <a className="dropdown-item text-light" href="#">
+                        AWS ID: 051650638025
+                      </a>
+                    </li>
+                    <li onClick={() => handleClick("388328004932")}>
+                      <a className="dropdown-item text-light" href="#">
+                        AWS ID: 388328004932
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
+            {token && (
+              <button
+                onClick={() => {
+                  sessionStorage.removeItem("token");
+                  navigate("/login");
+                  dispatch({ type: "updateToken", payload: { token: null } });
+                }}
+                className="btn bnt-outline"
+              >
+                logout
+              </button>
+            )}
           </div>
         </div>
       </div>

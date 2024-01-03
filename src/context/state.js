@@ -8,6 +8,9 @@ function reducer(state, action) {
       return { ...state, currentAccount: action.payload.currentAccount };
       break;
 
+    case "updateToken":
+      return { ...state, token: action.payload.token };
+      break;
     default:
       return state;
       break;
@@ -15,6 +18,7 @@ function reducer(state, action) {
 }
 let initialState = {
   currentAccount: localStorage.getItem("accountId") || "051650638025",
+  token: null,
 };
 export default function StateProvider({ children }) {
   let [state, dispatch] = useReducer(reducer, initialState);

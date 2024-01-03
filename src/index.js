@@ -5,22 +5,40 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 // import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import ErrorPage from "./error-page";
 import GetInstaceDetails from "./components/get-instance-details";
 import NavComponents from "./components/UI/Nav";
 import StateProvider from "./context/state";
+import Login from "./components/Login";
 
+let authHandler = () => {
+  let token = sessionStorage.getItem("token");
+  if (!token) {
+    throw redirect("/login");
+  }
+  return{}
+};
 const root = ReactDOM.createRoot(document.getElementById("root"));
 let router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
+    loader: authHandler,
   },
+  // {
+  //   path: "/home",
+  //   loader: authHandler,
+  //   element: <App />,
+  // },
   {
-    path: "/get-instance-details",
-    element: <GetInstaceDetails />,
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
@@ -30,6 +48,7 @@ root.render(
     {/* <React.StrictMode> */}
     <StateProvider>
       <NavComponents />
+
       <RouterProvider
         fallbackElement={
           <>
@@ -48,3 +67,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+export let navigate=router.navigate
