@@ -8,6 +8,7 @@ import Top7ServicesComponent from "./Top7Services";
 import CountryViewComponent from "./CountryView";
 import { StateContext } from "../context/state";
 import { baseUrl } from "../utils/utils";
+import { toast } from "react-toastify";
 
 let nodeApi = `${baseUrl}/aws/lambda/run`;
 let instanceConfig = [
@@ -147,7 +148,7 @@ const Home = React.memo(() => {
     setLoading(true);
     switch (action) {
       case "ec2":
-       //console.log("Calling EC Fetch API");
+        //console.log("Calling EC Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
@@ -184,7 +185,7 @@ const Home = React.memo(() => {
         break;
 
       case "eks_cluster":
-       //console.log("Calling EKS Fetch API");
+        //console.log("Calling EKS Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
@@ -222,7 +223,7 @@ const Home = React.memo(() => {
         break;
 
       case "rds":
-       //console.log("Calling RDS Fetch API");
+        //console.log("Calling RDS Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
@@ -241,7 +242,7 @@ const Home = React.memo(() => {
 
             setResourceDetails((prev) => {
               prev["RDS"] = res["RDS"];
-             //console.log("state", prev);
+              //console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               return { ...prev };
             });
@@ -261,7 +262,7 @@ const Home = React.memo(() => {
         break;
 
       case "s3":
-       //console.log("Calling S3 Fetch API");
+        //console.log("Calling S3 Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         setLoading(true);
         fetch(nodeApi, {
@@ -274,7 +275,7 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-           //console.log(response);
+            //console.log(response);
             return response.json();
           })
           .then((res) => {
@@ -282,7 +283,7 @@ const Home = React.memo(() => {
 
             setResourceDetails((prev) => {
               prev["S3"] = res["S3"];
-             //console.log("state", prev);
+              //console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               let date = new Date().toString();
               localStorage.setItem("updatedAt", date);
@@ -302,7 +303,7 @@ const Home = React.memo(() => {
         break;
 
       case "top_7_service_data":
-       //console.log("Calling TOP-7 Services Cost Fetch API");
+        //console.log("Calling TOP-7 Services Cost Fetch API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -315,7 +316,7 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-           //console.log(response);
+            //console.log(response);
             return response.json();
           })
           .then((res) => {
@@ -338,7 +339,7 @@ const Home = React.memo(() => {
         break;
 
       case "reg_cost":
-       //console.log("Calling Region Cost Fetch API");
+        //console.log("Calling Region Cost Fetch API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -351,7 +352,7 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-           //console.log(response);
+            //console.log(response);
             return response.json();
           })
           .then((res) => {
@@ -374,7 +375,7 @@ const Home = React.memo(() => {
         break;
 
       case "compare_cost":
-       //console.log("Calling Compare Cost API");
+        //console.log("Calling Compare Cost API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -387,7 +388,7 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-           //console.log(response);
+            //console.log(response);
             return response.json();
           })
           .then((res) => {
@@ -409,7 +410,7 @@ const Home = React.memo(() => {
           });
         break;
       case "fetchuser":
-       //console.log("Calling Compare Cost API");
+        //console.log("Calling Compare Cost API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -422,7 +423,7 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-           //console.log(response);
+            //console.log(response);
             return response.json();
           })
           .then((res) => {
@@ -516,7 +517,7 @@ const Home = React.memo(() => {
   }, [currentApiConfig]);
 
   useEffect(() => {
-   //console.log("state change", state, localStorage.getItem("accountId"));
+    //console.log("state change", state, localStorage.getItem("accountId"));
     setSwitchLoading(true);
     setCurrentApiConfig(state.currentAccount);
     if (!localStorage.getItem("accountId")) {
@@ -527,7 +528,21 @@ const Home = React.memo(() => {
       let isConfirmed = confirm(
         "Switching accounts will take some time to refresh. Are you sure? "
       );
-      if (!isConfirmed) return;
+      if (!isConfirmed) {
+        toast("Can't switch to account", {
+          draggable: false,
+          position: "bottom-right",
+          type: "error",
+          theme: "colored",
+        });
+        return;
+      }
+      toast(`Successfully switched to account ${state.currentAccount}`, {
+        draggable: false,
+        position: "bottom-right",
+        type: "success",
+        theme: "colored",
+      });
       localStorage.clear();
       localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);

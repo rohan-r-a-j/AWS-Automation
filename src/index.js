@@ -18,6 +18,8 @@ import Login from "./components/Login";
 import UserMgmt from "./components/UserMgmt";
 import AddUser from "./components/AddUser";
 import UpdateUser from "./components/UpdateUser";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; 
 
 let authHandler = () => {
   let token = sessionStorage.getItem("token");
@@ -79,6 +81,7 @@ root.render(
         }
         router={router}
       />
+      <ToastContainer />
     </StateProvider>
 
     {/* </React.StrictMode> */}

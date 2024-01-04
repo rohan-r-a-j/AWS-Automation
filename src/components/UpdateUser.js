@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StateContext } from "../context/state";
 import { baseUrl } from "../utils/utils";
+import { toast } from "react-toastify";
 
 const UpdateUser = () => {
   let params = useParams();
+  let navigate = useNavigate()
   let [state, dispatch] = useContext(StateContext);
- //console.log(params, state);
+  //console.log(params, state);
 
   const [user, setUser] = useState(
     state.users.find((item) => item._id.toString() === params.id)
   );
   const [editMode, setEditMode] = useState(false);
   useEffect(() => {
-   //console.log("update", state);
+    //console.log("update", state);
   }, [state]);
   const handleEdit = () => {
     setEditMode(true);
@@ -21,7 +23,7 @@ const UpdateUser = () => {
 
   const handleSave = () => {
     // Here you would typically send the updated user data back to the server
-   //console.log("Updated User Data:", user);
+    //console.log("Updated User Data:", user);
 
     fetch(`${baseUrl}/users/update`, {
       headers: {
@@ -30,17 +32,31 @@ const UpdateUser = () => {
         // Add any additional headers if needed,
       },
       method: "POST",
-      body: JSON.stringify({ role: user.type, password: user.password,userId:user._id.toString() }),
+      body: JSON.stringify({
+        role: user.type,
+        password: user.password,
+        userId: user._id.toString(),
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
         // setUser(data);
-       //console.log("updated", data);
-        alert("Successfully Updated");
+        //console.log("updated", data);
+        toast(`Successfully Updated the user ${data.name}`, {
+          draggable: false,
+          position: "bottom-right",
+          type: "success",
+          theme: "colored",
+        });
       })
       .catch((err) => {
         console.error(err);
-        alert("Somthing went wrong");
+        toast(err.message, {
+          draggable: false,
+          position: "bottom-right",
+          type: "error",
+          theme: "colored",
+        });
       });
     setEditMode(false);
   };
@@ -131,6 +147,9 @@ const UpdateUser = () => {
             Edit
           </button>
         )}
+          <button onClick={()=>navigate('/manage/user')} className="btn btn-outline-danger mx-2">
+              Discard
+            </button>
       </div>
     </div>
   );

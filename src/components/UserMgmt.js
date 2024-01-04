@@ -3,6 +3,7 @@ import { StateContext } from "../context/state";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
+import { toast } from "react-toastify";
 
 const UserMgmt = () => {
   let [state, dispatch] = useContext(StateContext);
@@ -27,11 +28,11 @@ const UserMgmt = () => {
           if (data.error) {
             throw new Error(data.error);
           }
-          alert("successfully deleted");
+          toast(`User deleted successfully`,{draggable:false,position:'bottom-right',type:'warning',theme:'colored'})
           window.location.reload();
         })
         .catch((err) => {
-          alert(err);
+          toast(err,{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
         });
     }
   }

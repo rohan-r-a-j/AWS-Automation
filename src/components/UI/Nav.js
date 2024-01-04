@@ -4,6 +4,7 @@ import { navigate } from "../..";
 import { Link } from "react-router-dom";
 import "../styles/Nav.css";
 import { baseUrl } from "../../utils/utils";
+import { toast } from "react-toastify";
 export default function NavComponents(props) {
   const [currentAccountIndex, setCurrentAccountIndex] = useState(0);
 
@@ -168,6 +169,7 @@ export default function NavComponents(props) {
                   dispatch({ type: "updateToken", payload: { token: null } });
                   sessionStorage.removeItem("token");
                   sessionStorage.removeItem("user");
+                  toast('Successfully logged out',{draggable:false,position:'bottom-right',type:'info',theme:'colored'})
                   navigate("/login");
                 }}
                 className="Btn "

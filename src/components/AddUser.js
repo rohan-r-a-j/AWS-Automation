@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./styles/loader.css";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
+import { toast } from "react-toastify";
 const AddUser = () => {
   let [loading, setLoading] = useState(false);
   let navigate = useNavigate();
@@ -35,13 +36,13 @@ const AddUser = () => {
         if (data.error) {
           throw new Error(data.error);
         }
-        alert("successfully created");
+        toast(`User ${data.name} created`,{draggable:false,position:'bottom-right',type:'success',theme:'colored'})
         setLoading(false);
         navigate("/manage/user");
       })
       .catch((err) => {
         console.error(err);
-        alert(err.message);
+        toast(err.message,{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
         setLoading(false);
       });
   }

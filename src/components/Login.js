@@ -3,6 +3,7 @@ import "./styles/Login.css";
 import { StateContext } from "../context/state";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
+import { toast } from "react-toastify";
 const Login = () => {
   let [loginData, setLoginData] = useState({});
   let [state, dispatch] = useContext(StateContext);
@@ -25,17 +26,18 @@ const Login = () => {
       if (token) {
         // alert(`logged in ${token}`);
         if (res.ok) {
+          toast('Login successful',{draggable:false,position:'bottom-right',type:'success',theme:'colored'})
           dispatch({ type: "updateToken", payload: { token: token } });
           sessionStorage.setItem("token", token);
           navigate("/");
         } else if (res.status === 404) {
-          alert("User Not Found");
+          toast("User Not Found",{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
         } else {
-          alert(token);
+          toast(token,{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
         }
       }
     } catch (error) {
-      alert(error.message)
+      toast(error.message,{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
       console.error(error);
     }
   }
