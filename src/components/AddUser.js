@@ -36,7 +36,7 @@ const AddUser = () => {
         if (data.error) {
           throw new Error(data.error);
         }
-        toast(`User ${data.name} created`,{draggable:false,position:'bottom-right',type:'success',theme:'colored'})
+        toast(`User ${data.data.name} created`,{draggable:false,position:'bottom-right',type:'success',theme:'colored'})
         setLoading(false);
         navigate("/manage/user");
       })

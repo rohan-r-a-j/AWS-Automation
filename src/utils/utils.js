@@ -80,7 +80,8 @@ for (let service in organizedData) {
   }
 }
 
-export let baseUrl = process.env.NODE_ENV!=='production' ?'http://localhost:3000':''
+export let baseUrl = 'https://api.hcl-cloudadmins.com'
+// process.env.NODE_ENV!=='production' ?'http://localhost:3000':''
 // 'http://35.174.164.149:3000'
 
 
