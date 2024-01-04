@@ -12,7 +12,7 @@ const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-   //console.log(loginData);
+    //console.log(loginData);
     try {
       let res = await fetch(`${baseUrl}/auth/login`, {
         method: "POST",
@@ -24,11 +24,18 @@ const Login = () => {
       let token = await res.text();
       if (token) {
         // alert(`logged in ${token}`);
-        dispatch({ type: "updateToken", payload: { token: token } });
-        sessionStorage.setItem("token", token);
-        navigate("/");
+        if (res.ok) {
+          dispatch({ type: "updateToken", payload: { token: token } });
+          sessionStorage.setItem("token", token);
+          navigate("/");
+        } else if (res.status === 404) {
+          alert("User Not Found");
+        } else {
+          alert(token);
+        }
       }
     } catch (error) {
+      alert(error.message)
       console.error(error);
     }
   }
@@ -64,14 +71,15 @@ const Login = () => {
                 ></input>
               </div>
               <div
-                onClick={() =>
+               
+                className="forgot"
+                
+              >
+                <a  onClick={() =>
                   alert(
                     "Connect to Admin for password or Reach out to aws-admins@hcl.com"
                   )
-                }
-                className="forgot"
-              >
-                <a>Forgot password?</a>
+                } role="button">Forgot password?</a>
               </div>
               <button type="submit" className="btn btn-primary">
                 Login
