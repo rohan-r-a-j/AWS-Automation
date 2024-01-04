@@ -80,7 +80,8 @@ for (let service in organizedData) {
   }
 }
 
-export let baseUrl = process.env.NODE_ENV!=='production' ?'http://localhost:3000':''
+export let baseUrl = 'http://35.174.164.149:3000'
+// process.env.NODE_ENV!=='production' ?'http://localhost:3000':''
 
 // let costs = {
 //   USA: {
