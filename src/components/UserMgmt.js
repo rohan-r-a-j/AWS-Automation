@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 const UserMgmt = () => {
   let [state, dispatch] = useContext(StateContext);
   let navigate = useNavigate();
-  let user = Array(8).fill("user");
   let [users, setUsers] = useState([]);
 
   function handleDelete(userId) {
@@ -30,7 +29,9 @@ const UserMgmt = () => {
           alert("successfully deleted");
           window.location.reload();
         })
-        .catch((err) => {alert(err)});
+        .catch((err) => {
+          alert(err);
+        });
     }
   }
   useEffect(() => {
@@ -42,7 +43,11 @@ const UserMgmt = () => {
       },
     })
       .then((res) => res.json())
-      .then((data) => setUsers(data))
+      .then((data) => {
+        setUsers(data);
+        console.log("fetch userss");
+        dispatch({ type: "users", payload: { users: data } });
+      })
       .catch((err) => console.error(err));
   }, []);
   return (
@@ -95,7 +100,12 @@ const UserMgmt = () => {
                     : "Never logged in"}{" "}
                 </td>
                 <td>
-                  <div className="btn btn-sm btn-primary">edit</div>
+                  <div
+                    className="btn btn-sm btn-primary"
+                    onClick={() => navigate(`edit/${item._id}`)}
+                  >
+                    edit
+                  </div>
                   <div
                     className="btn btn-sm btn-danger mx-1"
                     onClick={() => handleDelete(item._id.toString())}

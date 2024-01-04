@@ -17,6 +17,7 @@ import StateProvider from "./context/state";
 import Login from "./components/Login";
 import UserMgmt from "./components/UserMgmt";
 import AddUser from "./components/AddUser";
+import UpdateUser from "./components/UpdateUser";
 
 let authHandler = () => {
   let token = sessionStorage.getItem("token");
@@ -56,6 +57,11 @@ let router = createBrowserRouter([
   },
   { path: "/manage/user", element: <UserMgmt />, loader: rootHandler },
   { path: "/manage/user/add", element: <AddUser />, loader: rootHandler },
+  {
+    path: "/manage/user/edit/:id",
+    element: <UpdateUser />,
+    loader: rootHandler,
+  },
 ]);
 
 console.log("INdex");

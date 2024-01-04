@@ -4,8 +4,8 @@ import { StateContext } from "../context/state";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
   let [loginData, setLoginData] = useState({});
-  let [state,dispatch]=useContext(StateContext)
-  let navigate = useNavigate()
+  let [state, dispatch] = useContext(StateContext);
+  let navigate = useNavigate();
   let handleChange = (e) =>
     setLoginData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -14,7 +14,6 @@ const Login = () => {
     console.log(loginData);
     try {
       let res = await fetch("http://localhost:3000/auth/login", {
-
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,9 +23,9 @@ const Login = () => {
       let token = await res.text();
       if (token) {
         // alert(`logged in ${token}`);
-        dispatch({type:"updateToken",payload:{token:token}})
+        dispatch({ type: "updateToken", payload: { token: token } });
         sessionStorage.setItem("token", token);
-        navigate('/')
+        navigate("/");
       }
     } catch (error) {
       console.error(error);
@@ -63,8 +62,15 @@ const Login = () => {
                   onChange={handleChange}
                 ></input>
               </div>
-              <div className="forgot">
-                <a href="reset.html">Forgot password?</a>
+              <div
+                onClick={() =>
+                  alert(
+                    "Connect to Admin for password or Reach out to aws-admins@hcl.com"
+                  )
+                }
+                className="forgot"
+              >
+                <a>Forgot password?</a>
               </div>
               <button type="submit" className="btn btn-primary">
                 Login

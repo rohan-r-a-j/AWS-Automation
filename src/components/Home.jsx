@@ -690,8 +690,8 @@ const Home = React.memo(() => {
                 {item.dataKey instanceof Array ? (
                   <div className="card-body">
                     <div className="row">
-                      {item.dataKey.map((item) => (
-                        <div className="col-6 placeholder-wave">
+                      {item.dataKey.map((item, i) => (
+                        <div key={i} className="col-6 placeholder-wave">
                           <h5 className="card-title placeholder-wave">
                             <span
                               style={{ minHeight: "3rem !important" }}

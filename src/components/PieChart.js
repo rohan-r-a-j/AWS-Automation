@@ -198,7 +198,7 @@ const PieChartComponent = ({ chartData }) => (
         justify: false,
         translateX: 80,
         translateY: 5,
-        itemsSpacing: 5,
+        itemsSpacing: 5 ,
         itemWidth: 350,
         itemHeight: 8,
         itemTextColor: "#404",
