@@ -1,18 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { StateContext } from "../context/state";
+import { baseUrl } from "../utils/utils";
 
 const UpdateUser = () => {
   let params = useParams();
   let [state, dispatch] = useContext(StateContext);
-  console.log(params, state);
+ //console.log(params, state);
 
   const [user, setUser] = useState(
     state.users.find((item) => item._id.toString() === params.id)
   );
   const [editMode, setEditMode] = useState(false);
   useEffect(() => {
-    console.log("update", state);
+   //console.log("update", state);
   }, [state]);
   const handleEdit = () => {
     setEditMode(true);
@@ -20,9 +21,9 @@ const UpdateUser = () => {
 
   const handleSave = () => {
     // Here you would typically send the updated user data back to the server
-    console.log("Updated User Data:", user);
+   //console.log("Updated User Data:", user);
 
-    fetch("http://localhost:3000/users/update", {
+    fetch(`${baseUrl}/users/update`, {
       headers: {
         "Content-Type": "application/json",
         authorization: sessionStorage.getItem("token"),
@@ -34,7 +35,7 @@ const UpdateUser = () => {
       .then((res) => res.json())
       .then((data) => {
         // setUser(data);
-        console.log("updated", data);
+       //console.log("updated", data);
         alert("Successfully Updated");
       })
       .catch((err) => {

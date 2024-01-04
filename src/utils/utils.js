@@ -1,5 +1,5 @@
 export function mapGeoData(costs) {
-  // console.log("passed",costs)
+ 
   let d = Object.entries(costs);
   let dataArray = [];
   for (let item of d) {
@@ -10,7 +10,7 @@ export function mapGeoData(costs) {
       regions: Object.entries(item[1]),
     });
   }
-  //   console.log("dataArray",dataArray)
+
   return dataArray;
 }
 
@@ -19,7 +19,7 @@ export function mapBarChartData(data) {
   for (const key in data) {
     mapped.push({ month: key, ...data[key]["Service wise Cost"] });
   }
-  console.log("bar", mapped);
+
   return mapped;
 }
 export function barChartKey(data) {
@@ -31,13 +31,13 @@ export function barChartKey(data) {
     }
   }
   let keysArray = Object.keys(keys);
-  console.log("keys", keysArray);
+  ////console.log("keys", keysArray);
   return keysArray;
 }
 
 export function reorganizeCosts(data) {
   let organizedData = {};
-  console.log("Data", data);
+  //console.log("Data", data);
   for (let month in data) {
     let monthData = data[month]["Service wise Cost"];
 
@@ -46,13 +46,13 @@ export function reorganizeCosts(data) {
       organizedData["Total Cost"][month] = data[month]["Total Cost"];
     } else organizedData["Total Cost"][month] = data[month]["Total Cost"];
 
-    console.log("datesx");
+   //console.log("datesx");
     for (let service in monthData) {
       if (!organizedData[service]) {
         organizedData[service] = {};
       }
       organizedData[service][month] = monthData[service];
-      let monthKeys = Object.keys(data)
+      let monthKeys = Object.keys(data) 
       for (let i = 0; i < monthKeys.length; i++) {
         if (organizedData[service][monthKeys[i]] === undefined) {
           organizedData[service][monthKeys[i]] = "-";
@@ -61,7 +61,7 @@ export function reorganizeCosts(data) {
     }
   }
 
-  console.log("Organized", organizedData);
+  //console.log("Organized", organizedData);
   return organizedData;
 }
 
@@ -74,11 +74,13 @@ let organizedData = reorganizeCosts(data);
 
 // Print the organized data
 for (let service in organizedData) {
-  console.log(service + ":");
+  //console.log(service + ":");
   for (let month in organizedData[service]) {
-    console.log(`  - ${month}: ${organizedData[service][month]} USD`);
+    //console.log(`  - ${month}: ${organizedData[service][month]} USD`);
   }
 }
+
+export let baseUrl = process.env.NODE_ENV!=='production' ?'http://localhost:3000':''
 
 // let costs = {
 //   USA: {

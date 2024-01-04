@@ -17,7 +17,6 @@ const colorScale = scaleQuantize()
     '#ff0000'  // Red for 600+
   ]);
 
-// console.log("geoData", mapGeoData({data}));
 const GeoChart = ({data}) => (
   <ResponsiveChoropleth
   data={mapGeoData(data)}

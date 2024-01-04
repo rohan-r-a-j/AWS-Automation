@@ -15,7 +15,7 @@ function reducer(state, action) {
       return { ...state, user: action.payload.user };
       break;
     case "users":
-      console.log("called usrs dispatch")
+     //console.log("called usrs dispatch")
       return { ...state, users: action.payload.users };
       break;
     default:
@@ -31,7 +31,7 @@ let initialState = {
 };
 export default function StateProvider({ children }) {
   let [state, dispatch] = useReducer(reducer, initialState);
-  console.log("state", state);
+ //console.log("state", state);
   return (
     <StateContext.Provider value={[state, dispatch]}>
       {children}

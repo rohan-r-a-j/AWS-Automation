@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./styles/loader.css";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../utils/utils";
 const AddUser = () => {
   let [loading, setLoading] = useState(false);
   let navigate = useNavigate();
@@ -15,9 +16,9 @@ const AddUser = () => {
     userData.email = email.value;
     userData.password = password.value;
     // userData.accountId = accountId.value;
-    console.log("userData", userData);
+  
     setLoading(true);
-    fetch("http://localhost:3000/users/create", {
+    fetch(`${baseUrl}/users/create`, {
       headers: {
         "Content-Type": "application/json",
         authorization: sessionStorage.getItem("token"),

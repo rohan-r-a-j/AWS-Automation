@@ -33,7 +33,7 @@ let rootHandler = () => {
   if (!token) {
     throw redirect("/login");
   } else if (user.type !== "root") {
-    console.log("roothandler", user);
+    
     throw redirect("/");
   }
   return {};
@@ -64,7 +64,7 @@ let router = createBrowserRouter([
   },
 ]);
 
-console.log("INdex");
+
 root.render(
   <>
     {/* <React.StrictMode> */}

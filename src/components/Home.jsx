@@ -7,8 +7,9 @@ import UserDetailsComponent from "./UserDetails";
 import Top7ServicesComponent from "./Top7Services";
 import CountryViewComponent from "./CountryView";
 import { StateContext } from "../context/state";
+import { baseUrl } from "../utils/utils";
 
-let nodeApi = "http://localhost:3000/aws/lambda/run";
+let nodeApi = `${baseUrl}/aws/lambda/run`;
 let instanceConfig = [
   {
     label: "EC2 Instances",
@@ -146,7 +147,7 @@ const Home = React.memo(() => {
     setLoading(true);
     switch (action) {
       case "ec2":
-        console.log("Calling EC Fetch API");
+       //console.log("Calling EC Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
@@ -158,20 +159,17 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
             return response.json();
           })
           .then((res) => {
-            //   setInstances(res);
-            console.log(res);
             setResourceDetails((prev) => {
               prev["Total EC2"] = res["Total EC2"];
-              console.log("state", prev);
+
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               return { ...prev };
             });
             setInstances(res);
-            console.log(res);
+
             localStorage.setItem("instances", JSON.stringify(res));
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
@@ -180,14 +178,13 @@ const Home = React.memo(() => {
             setLoadingContext((prev) => ({ ...prev, [action]: false }));
           })
           .catch((err) => {
-            console.log(err);
             setLoading(false);
             setLoadingContext((prev) => ({ ...prev, [action]: false }));
           });
         break;
 
       case "eks_cluster":
-        console.log("Calling EKS Fetch API");
+       //console.log("Calling EKS Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
@@ -199,22 +196,20 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
             return response.json();
           })
           .then((res) => {
             //   setInstances(res);
-            console.log(res);
+
             setResourceDetails((prev) => {
               prev["EKS"] = res["EKS"];
-              console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               let date = new Date().toString();
               localStorage.setItem("updatedAt", date);
               setDate(date);
               return { ...prev };
             });
-            console.log(res);
+
             //   localStorage.setItem("instances", JSON.stringify(res));
             setLoading(false);
             setLoadingContext((prev) => ({ ...prev, [action]: false }));
@@ -227,7 +222,7 @@ const Home = React.memo(() => {
         break;
 
       case "rds":
-        console.log("Calling RDS Fetch API");
+       //console.log("Calling RDS Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
           method: "POST",
@@ -239,19 +234,18 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
             return response.json();
           })
           .then((res) => {
             //   setInstances(res);
-            console.log(res);
+
             setResourceDetails((prev) => {
               prev["RDS"] = res["RDS"];
-              console.log("state", prev);
+             //console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               return { ...prev };
             });
-            console.log(res);
+
             //   localStorage.setItem("instances", JSON.stringify(res));
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
@@ -267,7 +261,7 @@ const Home = React.memo(() => {
         break;
 
       case "s3":
-        console.log("Calling S3 Fetch API");
+       //console.log("Calling S3 Fetch API");
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         setLoading(true);
         fetch(nodeApi, {
@@ -280,22 +274,22 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
+           //console.log(response);
             return response.json();
           })
           .then((res) => {
             //   setInstances(res);
-            console.log(res);
+
             setResourceDetails((prev) => {
               prev["S3"] = res["S3"];
-              console.log("state", prev);
+             //console.log("state", prev);
               localStorage.setItem("resourceDetails", JSON.stringify(prev));
               let date = new Date().toString();
               localStorage.setItem("updatedAt", date);
               setDate(date);
               return { ...prev };
             });
-            console.log(res);
+
             //   localStorage.setItem("instances", JSON.stringify(res));
             setLoading(false);
             setLoadingContext((prev) => ({ ...prev, [action]: false }));
@@ -308,7 +302,7 @@ const Home = React.memo(() => {
         break;
 
       case "top_7_service_data":
-        console.log("Calling TOP-7 Services Cost Fetch API");
+       //console.log("Calling TOP-7 Services Cost Fetch API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -321,14 +315,14 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
+           //console.log(response);
             return response.json();
           })
           .then((res) => {
             //   setInstances(res);
-            console.log(res);
+
             setCostDetails(res);
-            console.log(res);
+
             localStorage.setItem("costDetails", JSON.stringify(res));
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
@@ -344,7 +338,7 @@ const Home = React.memo(() => {
         break;
 
       case "reg_cost":
-        console.log("Calling Region Cost Fetch API");
+       //console.log("Calling Region Cost Fetch API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -357,14 +351,14 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
+           //console.log(response);
             return response.json();
           })
           .then((res) => {
             //   setInstances(res);
 
             setCostChartData(res);
-            console.log(res);
+
             localStorage.setItem("costChartData", JSON.stringify(res));
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
@@ -380,7 +374,7 @@ const Home = React.memo(() => {
         break;
 
       case "compare_cost":
-        console.log("Calling Compare Cost API");
+       //console.log("Calling Compare Cost API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -393,14 +387,14 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
+           //console.log(response);
             return response.json();
           })
           .then((res) => {
             //   setInstances(res);
 
             setCompareCostData(res);
-            console.log(res);
+
             localStorage.setItem("compareCostData", JSON.stringify(res));
             let date = new Date().toString();
             localStorage.setItem("updatedAt", date);
@@ -415,7 +409,7 @@ const Home = React.memo(() => {
           });
         break;
       case "fetchuser":
-        console.log("Calling Compare Cost API");
+       //console.log("Calling Compare Cost API");
         setLoading(true);
         setLoadingContext((prev) => ({ ...prev, [action]: true }));
         fetch(nodeApi, {
@@ -428,12 +422,12 @@ const Home = React.memo(() => {
           body: JSON.stringify({ name: action, account: state.currentAccount }),
         })
           .then((response) => {
-            console.log(response);
+           //console.log(response);
             return response.json();
           })
           .then((res) => {
             setUserData(res);
-            console.log(res);
+
             localStorage.setItem("users", JSON.stringify(res));
             setLoading(false);
             let date = new Date().toString();
@@ -467,12 +461,11 @@ const Home = React.memo(() => {
       // body:JSON.stringify({ instance_id: instanceId })
     })
       .then((response) => {
-        console.log(response);
         return response.json();
       })
       .then((res) => {
         setInstances(res);
-        console.log(res);
+
         localStorage.setItem("instances", JSON.stringify(res));
         let date = new Date().toString();
         localStorage.setItem("updatedAt", date);
@@ -523,14 +516,18 @@ const Home = React.memo(() => {
   }, [currentApiConfig]);
 
   useEffect(() => {
-    console.log("state change", state, localStorage.getItem("accountId"));
+   //console.log("state change", state, localStorage.getItem("accountId"));
     setSwitchLoading(true);
     setCurrentApiConfig(state.currentAccount);
     if (!localStorage.getItem("accountId")) {
       localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);
     } else if (state.currentAccount !== localStorage.getItem("accountId")) {
-      alert("clearing localstorage");
+      // eslint-disable-next-line no-restricted-globals
+      let isConfirmed = confirm(
+        "Switching accounts will take some time to refresh. Are you sure? "
+      );
+      if (!isConfirmed) return;
       localStorage.clear();
       localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);
@@ -686,18 +683,31 @@ const Home = React.memo(() => {
             (item.dataKey instanceof Array &&
               item.dataKey.some((item) => lodingContext[item])) ||
             lodingContext[item.dataKey] ? (
-              <div className={item.colStyle} key={i}>
+              <div className={item.colStyle + " card"} key={i}>
                 {item.dataKey instanceof Array ? (
                   <div className="card-body">
                     <div className="row">
                       {item.dataKey.map((item, i) => (
-                        <div key={i} className="col-6 placeholder-wave">
+                        <div
+                          key={i}
+                          className="col-6 card placeholder-wave my-4 p-4"
+                        >
                           <h5 className="card-title placeholder-wave">
                             <span
-                              style={{ minHeight: "3rem !important" }}
+                              style={{ height: "3rem" }}
                               className="placeholder col-6"
                             ></span>
                           </h5>
+                          <p className="card-text placeholder-wave">
+                            <span className="placeholder col-4"></span>
+
+                            <span className="placeholder col-8"></span>
+                          </p>
+                          <p className="card-text placeholder-wave">
+                            <span className="placeholder col-4"></span>
+
+                            <span className="placeholder col-8"></span>
+                          </p>
                           <p className="card-text placeholder-wave">
                             <span className="placeholder col-4"></span>
 

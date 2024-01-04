@@ -24,7 +24,7 @@
         // body:JSON.stringify({ instance_id: instanceId })
         })
         .then((response) => {
-            console.log(response);
+   
             return response.json();
         })
         .then((res) => {

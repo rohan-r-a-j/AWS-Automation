@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { StateContext } from "../context/state";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../utils/utils";
 
 const UserMgmt = () => {
   let [state, dispatch] = useContext(StateContext);
@@ -12,7 +13,7 @@ const UserMgmt = () => {
     // eslint-disable-next-line no-restricted-globals
     let isOK = confirm("Do you want to delete this user?");
     if (isOK) {
-      fetch("http://localhost:3000/users/delete", {
+      fetch(`${baseUrl}/users/delete`, {
         headers: {
           "Content-Type": "application/json",
           authorization: sessionStorage.getItem("token"),
@@ -35,7 +36,7 @@ const UserMgmt = () => {
     }
   }
   useEffect(() => {
-    fetch("http://localhost:3000/users/all", {
+    fetch(`${baseUrl}/users/all`, {
       headers: {
         "Content-Type": "application/json",
         authorization: sessionStorage.getItem("token"),
@@ -45,7 +46,7 @@ const UserMgmt = () => {
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
-        console.log("fetch userss");
+       //console.log("fetch userss");
         dispatch({ type: "users", payload: { users: data } });
       })
       .catch((err) => console.error(err));

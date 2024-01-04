@@ -20,7 +20,6 @@ export function mapAWSCostToChartData(topServices) {
       color: colors[index % colors.length], // Assign a color, cycle through colors array
     };
   });
-console.log(mapped)
   return mapped
 }
 

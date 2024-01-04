@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import "./styles/Login.css";
 import { StateContext } from "../context/state";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../utils/utils";
 const Login = () => {
   let [loginData, setLoginData] = useState({});
   let [state, dispatch] = useContext(StateContext);
@@ -11,9 +12,9 @@ const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(loginData);
+   //console.log(loginData);
     try {
-      let res = await fetch("http://localhost:3000/auth/login", {
+      let res = await fetch(`${baseUrl}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
