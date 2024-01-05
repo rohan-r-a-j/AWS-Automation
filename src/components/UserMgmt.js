@@ -28,11 +28,21 @@ const UserMgmt = () => {
           if (data.error) {
             throw new Error(data.error);
           }
-          toast(`User deleted successfully`,{draggable:false,position:'bottom-right',type:'warning',theme:'colored'})
+          toast(`User deleted successfully`, {
+            draggable: false,
+            position: "bottom-right",
+            type: "warning",
+            theme: "colored",
+          });
           window.location.reload();
         })
         .catch((err) => {
-          toast(err,{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
+          toast(err.message, {
+            draggable: false,
+            position: "bottom-right",
+            type: "error",
+            theme: "colored",
+          });
         });
     }
   }
@@ -47,7 +57,7 @@ const UserMgmt = () => {
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
-       //console.log("fetch userss");
+        //console.log("fetch userss");
         dispatch({ type: "users", payload: { users: data } });
       })
       .catch((err) => console.error(err));

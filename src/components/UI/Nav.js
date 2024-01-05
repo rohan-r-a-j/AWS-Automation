@@ -32,7 +32,7 @@ export default function NavComponents(props) {
           payload: { user: data },
         });
         sessionStorage.setItem("user", JSON.stringify(data));
-       //console.log("user", data);
+        //console.log("user", data);
       })
       .catch((err) => console.error(err));
   }, [token]);
@@ -101,7 +101,7 @@ export default function NavComponents(props) {
                   </div>
                 </li>
               )}
-              {user?.type === "root" && token && (
+              {(user?.type === "root" || user?.type === "admin") && token && (
                 <li className="nav-item">
                   <div
                     className="nav-link text-light "
@@ -144,14 +144,14 @@ export default function NavComponents(props) {
                       {state.currentAccount}
                     </span>
                   </a>
-                  <ul className="dropdown-menu bg-primary">
+                  <ul className="dropdown-menu dropdown-menu-dark">
                     <li onClick={() => handleClick("051650638025")}>
-                      <a className="dropdown-item text-light" href="#">
+                      <a className="dropdown-item " href="#">
                         AWS ID: 051650638025
                       </a>
                     </li>
                     <li onClick={() => handleClick("388328004932")}>
-                      <a className="dropdown-item text-light" href="#">
+                      <a className="dropdown-item " href="#">
                         AWS ID: 388328004932
                       </a>
                     </li>
@@ -160,28 +160,122 @@ export default function NavComponents(props) {
               )}
             </div>
             {token && (
-              <button
-                onClick={() => {
-                  dispatch({
-                    type: "loggedInUser",
-                    payload: { user: null },
-                  });
-                  dispatch({ type: "updateToken", payload: { token: null } });
-                  sessionStorage.removeItem("token");
-                  sessionStorage.removeItem("user");
-                  toast('Successfully logged out',{draggable:false,position:'bottom-right',type:'info',theme:'colored'})
-                  navigate("/login");
-                }}
-                className="Btn "
-              >
-                <div className="sign">
-                  <svg viewBox="0 0 512 512">
-                    <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+              <div className="dropdown">
+                <button
+                  onClick={() => {
+                    // dispatch({
+                    //   type: "loggedInUser",
+                    //   payload: { user: null },
+                    // });
+                    // dispatch({ type: "updateToken", payload: { token: null } });
+                    // sessionStorage.removeItem("token");
+                    // sessionStorage.removeItem("user");
+                    // toast("Successfully logged out", {
+                    //   draggable: false,
+                    //   position: "bottom-right",
+                    //   type: "info",
+                    //   theme: "colored",
+                    // });
+                    // navigate("/login");
+                  }}
+                  className="user-icon "
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="#fff"
+                    className="bi bi-person-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                    />
                   </svg>
-                </div>
+                </button>
+                <ul className="dropdown-menu">
+                  {state.user && (
+                    <li draggable={false}>
+                      <div
+                        className="text-center hover-none"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        {state.user.name}{" "}
+                      </div>
+                      <div
+                        className="text-center hover-none"
+                        style={{ fontWeight: "100", fontSize: "0.8rem" }}
+                      >
+                        {state.user.email}{" "}
+                      </div>
+                    </li>
+                  )}
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/changePassword")}
+                      className="dropdown-item"
+                      type="button"
+                    >
+                      Change password
+                    </button>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
 
-                <div className="text">Logout</div>
-              </button>
+                  <li>
+                    <div className="d-grid">
+                      <button
+                        className="btn btn-sm btn-danger mx-2"
+                        type="button"
+                        onClick={() => {
+                          dispatch({
+                            type: "loggedInUser",
+                            payload: { user: null },
+                          });
+                          dispatch({
+                            type: "updateToken",
+                            payload: { token: null },
+                          });
+                          sessionStorage.removeItem("token");
+                          sessionStorage.removeItem("user");
+                          toast("Successfully logged out", {
+                            draggable: false,
+                            position: "bottom-right",
+                            type: "info",
+                            theme: "colored",
+                          });
+                          navigate("/login");
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="mx-1"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"
+                          />
+                          <path
+                            fill-rule="evenodd"
+                            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"
+                          />
+                        </svg>
+                        Log out
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             )}
           </div>
         </div>

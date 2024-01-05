@@ -122,13 +122,33 @@ text {
 
 .tab {
   border: none;
-background-color: #ccc;
+  background-color: #ccc;
   padding: 0.4rem 0.8rem;
   /* margin-inline: 2px; */
 }
 .active {
   border-bottom: solid 2px #888;
 }
-.dropdown-item:hover{
-  background-color:#444 !important;
+.dropdown-item:hover {
+  background-color: #444 !important;
+}
+
+.user-icon {
+  width: 3rem;
+  /* height: 4rem; */
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
+.user-icon + .dropdown-menu {
+  /* margin-right: 100% !important; */
+  position: absolute !important;
+  left: -260% !important;
+}
+.user-icon + .dropdown-menu .dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.hover-none:hover {
+  background-color: rgba(0, 0, 0, 0) !important;
 }

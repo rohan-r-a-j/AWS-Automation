@@ -1,5 +1,4 @@
 export function mapGeoData(costs) {
- 
   let d = Object.entries(costs);
   let dataArray = [];
   for (let item of d) {
@@ -46,13 +45,13 @@ export function reorganizeCosts(data) {
       organizedData["Total Cost"][month] = data[month]["Total Cost"];
     } else organizedData["Total Cost"][month] = data[month]["Total Cost"];
 
-   //console.log("datesx");
+    //console.log("datesx");
     for (let service in monthData) {
       if (!organizedData[service]) {
         organizedData[service] = {};
       }
       organizedData[service][month] = monthData[service];
-      let monthKeys = Object.keys(data) 
+      let monthKeys = Object.keys(data);
       for (let i = 0; i < monthKeys.length; i++) {
         if (organizedData[service][monthKeys[i]] === undefined) {
           organizedData[service][monthKeys[i]] = "-";
@@ -80,10 +79,11 @@ for (let service in organizedData) {
   }
 }
 
-export let baseUrl = 'https://api.hcl-cloudadmins.com'
-// process.env.NODE_ENV!=='production' ?'http://localhost:3000':''
+export let baseUrl =
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:3000"
+    : "https://api.hcl-cloudadmins.com";
 // 'http://35.174.164.149:3000'
-
 
 // let costs = {
 //   USA: {

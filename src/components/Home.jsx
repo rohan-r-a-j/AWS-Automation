@@ -447,37 +447,7 @@ const Home = React.memo(() => {
         break;
     }
   }
-  let findInstanceCount = () => {
-    let lambdaFunURL =
-      "https://ea2o6hzj4u3afffie2hkfcnr6u0couos.lambda-url.us-east-1.on.aws/";
 
-    // setLoading(true);
-    fetch(lambdaFunURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: token,
-        // Add any additional headers if needed,
-      },
-      // body:JSON.stringify({ instance_id: instanceId })
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((res) => {
-        setInstances(res);
-
-        localStorage.setItem("instances", JSON.stringify(res));
-        let date = new Date().toString();
-        localStorage.setItem("updatedAt", date);
-        setDate(date);
-        // setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        // setLoading(false);
-      });
-  };
   useEffect(() => {
     setToken(sessionStorage.getItem("token"));
     console.log("call effect");
@@ -494,6 +464,8 @@ const Home = React.memo(() => {
     let updatedAt = localStorage.getItem("updatedAt");
     let costChart = JSON.parse(localStorage.getItem("costChartData"));
     let compCost = JSON.parse(localStorage.getItem("compareCostData"));
+    if (instancesCount) setInstances(instancesCount);
+    else handleCardApiCall("ec2", setSwitchLoading);
     if (compCost) setCompareCostData(compCost);
     else handleCardApiCall("compare_cost", setSwitchLoading);
     if (costChart) setCostChartData(costChart);
@@ -539,7 +511,7 @@ const Home = React.memo(() => {
       }
       toast(`Successfully switched to account ${state.currentAccount}`, {
         draggable: false,
-        position: "bottom-right",
+        position: "top-right",
         type: "success",
         theme: "colored",
       });

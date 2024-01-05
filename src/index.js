@@ -19,8 +19,10 @@ import UserMgmt from "./components/UserMgmt";
 import AddUser from "./components/AddUser";
 import UpdateUser from "./components/UpdateUser";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'; 
+import "react-toastify/dist/ReactToastify.css";
+import ChangePassword from "./components/ChangePassword";
 
+let permittedUsers = ["root", "admin"];
 let authHandler = () => {
   let token = sessionStorage.getItem("token");
   if (!token) {
@@ -34,8 +36,7 @@ let rootHandler = () => {
 
   if (!token) {
     throw redirect("/login");
-  } else if (user.type !== "root") {
-    
+  } else if (!permittedUsers.includes(user.type)) {
     throw redirect("/");
   }
   return {};
@@ -43,16 +44,15 @@ let rootHandler = () => {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 let router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashboard",
     element: <App />,
     errorElement: <ErrorPage />,
     loader: authHandler,
   },
-  // {
-  //   path: "/home",
-  //   loader: authHandler,
-  //   element: <App />,
-  // },
+  {
+    path: "/",
+    loader: () => redirect("/dashboard"),
+  },
   {
     path: "/login",
     element: <Login />,
@@ -64,8 +64,12 @@ let router = createBrowserRouter([
     element: <UpdateUser />,
     loader: rootHandler,
   },
+  {
+    path: "/changePassword",
+    element: <ChangePassword />,
+    loader: authHandler,
+  },
 ]);
-
 
 root.render(
   <>
