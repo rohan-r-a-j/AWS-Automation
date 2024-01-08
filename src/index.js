@@ -21,6 +21,8 @@ import UpdateUser from "./components/UpdateUser";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ChangePassword from "./components/ChangePassword";
+import Task from "./components/Task";
+import AddTask from "./components/AddTask";
 
 let permittedUsers = ["root", "admin"];
 let authHandler = () => {
@@ -69,6 +71,8 @@ let router = createBrowserRouter([
     element: <ChangePassword />,
     loader: authHandler,
   },
+  { path: "/manage/task", element: <Task />, loader: rootHandler },
+  { path: "/manage/task/create", element: <AddTask />, loader: rootHandler },
 ]);
 
 root.render(

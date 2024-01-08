@@ -102,6 +102,7 @@ export default function NavComponents(props) {
                 </li>
               )}
               {(user?.type === "root" || user?.type === "admin") && token && (
+                <>
                 <li className="nav-item">
                   <div
                     className="nav-link text-light "
@@ -112,6 +113,17 @@ export default function NavComponents(props) {
                     Users
                   </div>
                 </li>
+                <li className="nav-item">
+                  <div
+                    className="nav-link text-light "
+                    aria-current="page"
+                    role="button"
+                    onClick={() => navigate("/manage/task")}
+                  >
+                    Task
+                  </div>
+                </li>
+                </>
               )}
             </ul>
             {/* <form className="d-flex" role="search">

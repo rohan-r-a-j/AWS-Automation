@@ -16,6 +16,7 @@ const UpdateUser = () => {
   const [editMode, setEditMode] = useState(false);
   useEffect(() => {
     //console.log("update", state);
+    if(!user)   navigate(-1)
   }, [state]);
   const handleEdit = () => {
     setEditMode(true);
@@ -42,6 +43,8 @@ const UpdateUser = () => {
       .then((data) => {
         // setUser(data);
         //console.log("updated", data);
+        if(data.error) throw new Error(data.error);
+        navigate(-1)
         toast(`Successfully Updated the user ${data.name}`, {
           draggable: false,
           position: "bottom-right",
@@ -65,7 +68,7 @@ const UpdateUser = () => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  if (!user) return <div>Chala ja BSDK</div>;
+  if (!user) return <div>Somthing went wrong</div>;
 
   return (
     <div className="container mt-4 px-5">

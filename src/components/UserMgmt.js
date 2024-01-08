@@ -102,7 +102,7 @@ const UserMgmt = () => {
           <tbody className="table-group-divider">
             {users.map((item, index) => (
               <tr key={item._id.toString()}>
-                <th scope="row">{index}</th>
+                <th scope="row">{index+1}</th>
                 <td>{item.name}</td>
                 <td>{item.email}</td>
                 <td>{item.type}</td>
