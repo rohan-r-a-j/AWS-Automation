@@ -9,8 +9,17 @@ const UserMgmt = () => {
   let [state, dispatch] = useContext(StateContext);
   let navigate = useNavigate();
   let [users, setUsers] = useState([]);
+  let [loading, setLoading] = useState(false);
 
-  function handleDelete(userId) {
+  function handelSearch(e) {
+    if (e.target.value.trim() === "") return setUsers(state.users);
+    setUsers(
+      state.users?.filter((item) =>
+        item.name.toLowerCase().match(e.target.value.toLowerCase())
+      )
+    );
+  }
+  function handelDelete(userId) {
     // eslint-disable-next-line no-restricted-globals
     let isOK = confirm("Do you want to delete this user?");
     if (isOK) {
@@ -47,6 +56,7 @@ const UserMgmt = () => {
     }
   }
   useEffect(() => {
+    setLoading(true);
     fetch(`${baseUrl}/users/all`, {
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +70,8 @@ const UserMgmt = () => {
         //console.log("fetch userss");
         dispatch({ type: "users", payload: { users: data } });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
   return (
     <div className="container">
@@ -82,12 +93,14 @@ const UserMgmt = () => {
                   className="form-control"
                   list="datalistOptions"
                   id="exampleDataList"
-                  placeholder="Type to search..."
+                  placeholder="Type the name to Search"
+                  onChange={handelSearch}
                 ></input>
               </div>
             </div>
           </div>
         </div>
+
         <table className="table table-striped">
           <thead>
             <tr>
@@ -99,35 +112,62 @@ const UserMgmt = () => {
               <th scope="col">Action</th>
             </tr>
           </thead>
-          <tbody className="table-group-divider">
-            {users.map((item, index) => (
-              <tr key={item._id.toString()}>
-                <th scope="row">{index+1}</th>
-                <td>{item.name}</td>
-                <td>{item.email}</td>
-                <td>{item.type}</td>
-                <td>
-                  {item.lastLogin
-                    ? moment(new Date(item.lastLogin)).fromNow()
-                    : "Never logged in"}{" "}
-                </td>
-                <td>
-                  <div
-                    className="btn btn-sm btn-primary"
-                    onClick={() => navigate(`edit/${item._id}`)}
-                  >
-                    edit
-                  </div>
-                  <div
-                    className="btn btn-sm btn-danger mx-1"
-                    onClick={() => handleDelete(item._id.toString())}
-                  >
-                    delete
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {loading ? (
+            <tbody className="table-group-divider">
+              {new Array(10).fill("placeholder").map((item, index) => (
+                <tr key={`${item}-${index}`}>
+                  <th scope="row " className="placeholder-glow">
+                    <span className="placeholder w-50"></span>
+                  </th>
+                  <td className="placeholder-glow">
+                    <span className="placeholder w-100"></span>
+                  </td>
+                  <td className="placeholder-glow">
+                    <span className="placeholder w-100"></span>
+                  </td>
+                  <td className="placeholder-glow">
+                    <span className="placeholder w-100"></span>
+                  </td>
+                  <td className="placeholder-glow">
+                    <span className="placeholder w-100"></span>
+                  </td>
+                  <td className="placeholder-glow">
+                    <span className="placeholder w-100"></span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <tbody className="table-group-divider">
+              {users.map((item, index) => (
+                <tr key={item._id.toString()}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{item.name}</td>
+                  <td>{item.email}</td>
+                  <td>{item.type}</td>
+                  <td>
+                    {item.lastLogin
+                      ? moment(new Date(item.lastLogin)).fromNow()
+                      : "Never logged in"}{" "}
+                  </td>
+                  <td>
+                    <div
+                      className="btn btn-sm btn-primary"
+                      onClick={() => navigate(`edit/${item._id}`)}
+                    >
+                      edit
+                    </div>
+                    <div
+                      className="btn btn-sm btn-danger mx-1"
+                      onClick={() => handelDelete(item._id.toString())}
+                    >
+                      delete
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
     </div>

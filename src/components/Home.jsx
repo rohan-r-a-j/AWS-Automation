@@ -139,7 +139,7 @@ const Home = React.memo(() => {
   let [switchLoading, setSwitchLoading] = useState(false);
   let [currentApiConfig, setCurrentApiConfig] = useState(state.currentAccount);
   let [token, setToken] = useState(state.token);
-  let [lodingContext, setLoadingContext] = useState({});
+  let [lodingContext, setLoadingContext] = useState({ undefined: true });
 
   //   Total EKS- https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/
   // Total S3- https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/
@@ -496,27 +496,8 @@ const Home = React.memo(() => {
       localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);
     } else if (state.currentAccount !== localStorage.getItem("accountId")) {
-      // eslint-disable-next-line no-restricted-globals
-      let isConfirmed = confirm(
-        "Switching accounts will take some time to refresh. Are you sure? "
-      );
-      if (!isConfirmed) {
-        toast("Can't switch to account", {
-          draggable: false,
-          position: "bottom-right",
-          type: "error",
-          theme: "colored",
-        });
-        return;
-      }
-      toast(`Successfully switched to account ${state.currentAccount}`, {
-        draggable: false,
-        position: "top-right",
-        type: "success",
-        theme: "colored",
-      });
-      localStorage.clear();
-      localStorage.setItem("accountId", state.currentAccount);
+     
+    
       setSwitchLoading(false);
     } else {
       setSwitchLoading(false);
@@ -665,43 +646,46 @@ const Home = React.memo(() => {
       </div>
       <br />
       <div className="container d-flex justify-content-center align-items-center">
-        <div className="row  row-gap-3">
+        <div className="row  row-gap-3" style={{ width: "100%" }}>
           {accountsConfig[state.currentAccount].map((item, i) =>
             (item.dataKey instanceof Array &&
               item.dataKey.some((item) => lodingContext[item])) ||
-            lodingContext[item.dataKey] ? (
-              <div className={item.colStyle + " card"} key={i}>
+            lodingContext[item.dataKey]
+           ? (
+              <div className={item.colStyle} key={i}>
                 {item.dataKey instanceof Array ? (
-                  <div className="card-body">
-                    <div className="row">
-                      {item.dataKey.map((item, i) => (
-                        <div
-                          key={i}
-                          className="col-6 card placeholder-wave my-4 p-4"
-                        >
-                          <h5 className="card-title placeholder-wave">
-                            <span
-                              style={{ height: "3rem" }}
-                              className="placeholder col-6"
-                            ></span>
-                          </h5>
-                          <p className="card-text placeholder-wave">
-                            <span className="placeholder col-4"></span>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row  p-2 row-gap-2">
+                        {item.dataKey.map((item, i) => (
+                          <div
+                            key={i}
+                            className="col-6 card placeholder-wave my-2 p-4"
+                          >
+                            <h5 className="card-title placeholder-wave">
+                              <span
+                                style={{ height: "3rem" }}
+                                className="placeholder col-6"
+                              ></span>
+                            </h5>
+                            <p className="card-text placeholder-wave">
+                              <span className="placeholder col-4"></span>
 
-                            <span className="placeholder col-8"></span>
-                          </p>
-                          <p className="card-text placeholder-wave">
-                            <span className="placeholder col-4"></span>
+                              <span className="placeholder col-8"></span>
+                            </p>
+                            <p className="card-text placeholder-wave">
+                              <span className="placeholder col-4"></span>
 
-                            <span className="placeholder col-8"></span>
-                          </p>
-                          <p className="card-text placeholder-wave">
-                            <span className="placeholder col-4"></span>
+                              <span className="placeholder col-8"></span>
+                            </p>
+                            <p className="card-text placeholder-wave">
+                              <span className="placeholder col-4"></span>
 
-                            <span className="placeholder col-8"></span>
-                          </p>
-                        </div>
-                      ))}
+                              <span className="placeholder col-8"></span>
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -718,7 +702,7 @@ const Home = React.memo(() => {
                     <div className="card-body">
                       <h5 className="card-title placeholder-wave">
                         <span
-                          style={{ minHeight: "3rem !important" }}
+                          style={{ height: "2rem",borderRadius:'4px' }}
                           className="placeholder col-6"
                         ></span>
                       </h5>

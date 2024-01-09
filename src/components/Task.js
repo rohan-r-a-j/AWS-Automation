@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Task = () => {
   let [state, dispatch] = useContext(StateContext);
   let [tasks, setTasks] = useState([]);
-  let {currentAccount}=state
+  let { currentAccount } = state;
   let navigate = useNavigate();
   useEffect(() => {
     fetch(`${baseUrl}/aws/lambda`, {
@@ -32,6 +32,35 @@ const Task = () => {
         });
       });
   }, [currentAccount]);
+  function invokeTask(task) {
+    // eslint-disable-next-line no-restricted-globals
+    let cnf = confirm("Are you sure you want to invoke this?");
+    if (!cnf) return;
+    let promise = new Promise(async (resolve, reject) => {
+      try {
+        let res = await fetch(`${baseUrl}/aws/lambda/run`, {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: sessionStorage.getItem("token"),
+          },
+          method: "POST",
+          body: JSON.stringify({ account:currentAccount,type:task.type,name:task.name }),
+        });
+        let data = await res.json();
+        if (data.error) throw Error(data.error);
+        console.log(data);
+        resolve(data);
+      } catch (error) {
+        console.error(error);
+        reject(error.message);
+      }
+    });
+    toast.promise(promise, {
+      pending: "invoking the task",
+      success: "successfully invoked the task",
+      error: "failed to invoke the task",
+    });
+  }
   //   if (!tasks) return <div>loading</div>;
   return (
     <div className="container">
@@ -43,7 +72,7 @@ const Task = () => {
           Add New Task +
         </button>
       </div>
-      {tasks.length>0 && (
+      {tasks.length > 0 && (
         <div className="row my-4">
           <div className="col-13">
             <table className="table">
@@ -56,11 +85,16 @@ const Task = () => {
               </thead>
               <tbody>
                 {tasks.map((item) => (
-                  <tr>
+                  <tr key={item._id}>
                     <td>{item.name}</td>
                     <td>{item.description}</td>
                     <td>
-                      <button onClick={()=>alert("Clicked")} className="btn btn-info btn-sm">Invoke</button>
+                      <button
+                        onClick={() => invokeTask(item)}
+                        className="btn btn-info btn-sm"
+                      >
+                        Invoke
+                      </button>
                     </td>
                   </tr>
                 ))}

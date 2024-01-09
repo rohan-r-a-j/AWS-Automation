@@ -76,33 +76,82 @@ function CostTrendComponent({
         </div>
         {tabIndex === 0 && <BarChart data={compareCostData} />}
         {tabIndex == 1 && (
-          <table
-            style={{ overflowX: "scroll", maxWidth: "100%" }}
-            className="table table-sm table-striped table-bordered border-primary"
+          <div
+            className="container"
+            style={{ maxHeight: "22rem", overflow: "auto" }}
           >
-            <thead>
-              <tr>
-                <th scope="col">Services</th>
-                {Object.keys(compareCostData).map((item, index) => (
-                  <th key={index} scope="col">
-                    {item}
+            <table
+              style={{ overflowX: "scroll", maxWidth: "100%" }}
+              className="table table-sm table-striped table-bordered border-dark cost-table"
+            >
+              <thead style={{ position: "sticky", top: -1, left: 0 }}>
+              <tr
+                  className="bg-light"
+                 
+                >
+                  <th
+                    style={{
+                      backgroundColor: "rgba(95, 30, 190, 1)",
+                      color: "#eee",
+                    }}
+                    scope="col"
+                  >
+                    Services
                   </th>
-                ))}
-              </tr>
+                  {Object.keys(compareCostData).map((item, index) => (
+                    <th
+                      style={{
+                        backgroundColor: "rgba(95, 30, 190, 1)",
+                        color: "#eee",
+                      }}
+                      key={index}
+                      scope="col"
+                    >
+                      {item}
+                    </th>
+                  ))}
+                </tr>
             </thead>
-            <tbody className="table-group-divider">
-              {["Total Cost", ...barChartKey(compareCostData)].map(
-                (item, index) => (
-                  <tr key={index}>
-                    <th scope="row">{item}</th>
-                    {keys.map((month, index) => (
-                      <td key={index}>{orgcost[item][month]}</td>
-                    ))}
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
+              <tbody className="table-group-divider">
+                {/* <tr
+                  className="bg-light"
+                  style={{ position: "sticky", top: -1, left: 0 }}
+                >
+                  <th
+                    style={{
+                      backgroundColor: "rgba(95, 30, 190, 1)",
+                      color: "#eee",
+                    }}
+                    scope="col"
+                  >
+                    Services
+                  </th>
+                  {Object.keys(compareCostData).map((item, index) => (
+                    <th
+                      style={{
+                        backgroundColor: "rgba(95, 30, 190, 1)",
+                        color: "#eee",
+                      }}
+                      key={index}
+                      scope="col"
+                    >
+                      {item}
+                    </th>
+                  ))}
+                </tr> */}
+                {["Total Cost", ...barChartKey(compareCostData)].map(
+                  (item, index) => (
+                    <tr key={index}>
+                      <th scope="row">{item}</th>
+                      {keys.map((month, index) => (
+                        <td key={index}>{orgcost[item][month]}</td>
+                      ))}
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
         <div className="d-grid"></div>
       </div>

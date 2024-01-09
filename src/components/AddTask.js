@@ -65,7 +65,7 @@ const AddTask = () => {
         style={{ position: "relative", overflow: "hidden" }}
       >
         <form onSubmit={onSubmit}>
-          <h4>Create a new User</h4>
+          <h4>Create a new Task</h4>
           <div className="row">
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
