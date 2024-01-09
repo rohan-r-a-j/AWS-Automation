@@ -44,12 +44,21 @@ const Task = () => {
             authorization: sessionStorage.getItem("token"),
           },
           method: "POST",
-          body: JSON.stringify({ account:currentAccount,type:task.type,name:task.name }),
+          body: JSON.stringify({
+            account: currentAccount,
+            type: task.type,
+            name: task.name,
+          }),
         });
-        let data = await res.json();
-        if (data.error) throw Error(data.error);
+        let data;
+        // try {
+        //   data = await res.json();
+        //   if (data.error) throw Error(data.error);
+        // } catch (error) {
+        //   data = await res.text();
+        // }
         console.log(data);
-        resolve(data);
+        if (res.ok) resolve(data);
       } catch (error) {
         console.error(error);
         reject(error.message);

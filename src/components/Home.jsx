@@ -138,7 +138,7 @@ const Home = React.memo(() => {
   let [tabIndex, setTabIndex] = useState(0);
   let [switchLoading, setSwitchLoading] = useState(false);
   let [currentApiConfig, setCurrentApiConfig] = useState(state.currentAccount);
-  let [token, setToken] = useState(state.token);
+  let [token, setToken] = useState(sessionStorage.getItem('token'));
   let [lodingContext, setLoadingContext] = useState({ undefined: true });
 
   //   Total EKS- https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/
@@ -460,16 +460,14 @@ const Home = React.memo(() => {
     let users = JSON.parse(localStorage.getItem("users"));
     let instancesCount = JSON.parse(localStorage.getItem("instances"));
     let resources = JSON.parse(localStorage.getItem("resourceDetails"));
-    let costs = JSON.parse(localStorage.getItem("costDetails"));
+    // let costs = JSON.parse(localStorage.getItem("costDetails"));
     let updatedAt = localStorage.getItem("updatedAt");
-    let costChart = JSON.parse(localStorage.getItem("costChartData"));
-    let compCost = JSON.parse(localStorage.getItem("compareCostData"));
+    // let costChart = JSON.parse(localStorage.getItem("costChartData"));
+    // let compCost = JSON.parse(localStorage.getItem("compareCostData"));
     if (instancesCount) setInstances(instancesCount);
     else handleCardApiCall("ec2", setSwitchLoading);
-    if (compCost) setCompareCostData(compCost);
-    else handleCardApiCall("compare_cost", setSwitchLoading);
-    if (costChart) setCostChartData(costChart);
-    else handleCardApiCall("reg_cost", setSwitchLoading);
+    handleCardApiCall("compare_cost", setSwitchLoading);
+    handleCardApiCall("reg_cost", setSwitchLoading);
     if (updatedAt) setDate(updatedAt);
     if (resources) setResourceDetails(resources);
     else {
@@ -477,8 +475,7 @@ const Home = React.memo(() => {
         handleCardApiCall(item.type, setSwitchLoading)
       );
     }
-    if (costs) setCostDetails(costs);
-    else handleCardApiCall("top_7_service_data", setSwitchLoading);
+    handleCardApiCall("top_7_service_data", setSwitchLoading);
 
     if (users) {
       setUserData(users);
@@ -496,8 +493,6 @@ const Home = React.memo(() => {
       localStorage.setItem("accountId", state.currentAccount);
       setSwitchLoading(false);
     } else if (state.currentAccount !== localStorage.getItem("accountId")) {
-     
-    
       setSwitchLoading(false);
     } else {
       setSwitchLoading(false);
@@ -650,8 +645,7 @@ const Home = React.memo(() => {
           {accountsConfig[state.currentAccount].map((item, i) =>
             (item.dataKey instanceof Array &&
               item.dataKey.some((item) => lodingContext[item])) ||
-            lodingContext[item.dataKey]
-           ? (
+            lodingContext[item.dataKey] ? (
               <div className={item.colStyle} key={i}>
                 {item.dataKey instanceof Array ? (
                   <div className="card">
@@ -702,7 +696,7 @@ const Home = React.memo(() => {
                     <div className="card-body">
                       <h5 className="card-title placeholder-wave">
                         <span
-                          style={{ height: "2rem",borderRadius:'4px' }}
+                          style={{ height: "2rem", borderRadius: "4px" }}
                           className="placeholder col-6"
                         ></span>
                       </h5>

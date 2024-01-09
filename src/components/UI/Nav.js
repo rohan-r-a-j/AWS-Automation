@@ -145,6 +145,16 @@ export default function NavComponents(props) {
                     Task
                   </div>
                 </li>
+                <li className="nav-item">
+                  <div
+                    className="nav-link text-light "
+                    aria-current="page"
+                    role="button"
+                    onClick={() => navigate("/manage/iam/users")}
+                  >
+                    IAM
+                  </div>
+                </li>
                 </>
               )}
             </ul>
