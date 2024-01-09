@@ -70,7 +70,7 @@ const UserMgmt = () => {
         //console.log("fetch userss");
         dispatch({ type: "users", payload: { users: data } });
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {console.error(err);toast(err.message,{position:'bottom-right',theme:'colored',type:'error',draggable:false})})
       .finally(() => setLoading(false));
   }, []);
   return (
