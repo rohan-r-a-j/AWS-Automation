@@ -13,12 +13,14 @@ const IAMUsers = () => {
   let { currentAccount } = state;
 
   function handelSearch(e) {
+    console.log('st',state)
     if (e.target.value.trim() === "") return setUsers(state.iam_users);
-    setUsers(
-      state.iam_users?.filter((item) =>
-        item["Username"].toLowerCase().match(e.target.value.toLowerCase())
-      )
-    );
+    else
+      setUsers(
+        state.iam_users?.filter((item) =>
+          item["Username"].toLowerCase().match(e.target.value.toLowerCase())
+        )
+      );
   }
   function handelDelete(userId) {
     // eslint-disable-next-line no-restricted-globals
@@ -57,37 +59,42 @@ const IAMUsers = () => {
     // }
   }
   useEffect(() => {
-    setLoading(true);
-    fetch(`${baseUrl}/aws/lambda/run`, {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: sessionStorage.getItem("token"),
-        // Add any additional headers if needed,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        account: state.currentAccount,
-        name: "iam_users",
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error);
-        setUsers(data);
-        //console.log("fetch userss");
-        dispatch({ type: "iam_users", payload: { iam_users: data } });
+    let iam_users = JSON.parse(sessionStorage.getItem("iam_users"));
+    if (iam_users) {setUsers(iam_users); dispatch({ type: "iam_users", payload: { iam_users: iam_users } });}
+    else {
+      setLoading(true);
+      fetch(`${baseUrl}/aws/lambda/run`, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("token"),
+          // Add any additional headers if needed,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          account: state.currentAccount,
+          name: "iam_users",
+        }),
       })
-      .catch((err) => {
-        console.error(err);
-        setUsers([]);
-        toast(err.message, {
-          position: "bottom-right",
-          theme: "colored",
-          type: "error",
-          draggable: false,
-        });
-      })
-      .finally(() => setLoading(false));
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) throw new Error(data.error);
+          setUsers(data);
+          dispatch({ type: "iam_users", payload: { iam_users: data } });
+          console.log("fetch userss",state);
+          sessionStorage.setItem("iam_users", JSON.stringify(data));
+        })
+        .catch((err) => {
+          console.error(err);
+          setUsers([]);
+          toast(err.message, {
+            position: "bottom-right",
+            theme: "colored",
+            type: "error",
+            draggable: false,
+          });
+        })
+        .finally(() => setLoading(false));
+    }
   }, [currentAccount]);
   return (
     <div className="container">
@@ -98,7 +105,7 @@ const IAMUsers = () => {
               <div className="col-6">
                 <div
                   className="btn btn-primary  btn-lg"
-                  onClick={() => navigate("/manage/user/add")}
+                  onClick={() => navigate("/manage/iam/users/create")}
                 >
                   {" "}
                   + Add User
@@ -185,6 +192,7 @@ const IAMUsers = () => {
               </th>
             </tr>
           </thead>
+         
           {loading ? (
             <tbody className="table-group-divider">
               {new Array(10).fill("placeholder").map((item, index) => (
@@ -262,6 +270,7 @@ const IAMUsers = () => {
             </tbody>
           )}
         </table>
+        {users.length===0 && <h2 className="text-center text-secondary">No Records found</h2>}
       </div>
     </div>
   );

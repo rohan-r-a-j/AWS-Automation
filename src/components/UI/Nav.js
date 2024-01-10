@@ -10,7 +10,7 @@ export default function NavComponents(props) {
 
   let [state, dispatch] = useContext(StateContext);
   let { token, user } = state;
-  console.log(window.location.pathname)
+  console.log(window.location.pathname);
 
   useEffect(() => {
     if (!token) {
@@ -39,8 +39,8 @@ export default function NavComponents(props) {
   }, [token]);
 
   function handleClick(currentAccount) {
-     // eslint-disable-next-line no-restricted-globals
-     let isConfirmed = confirm(
+    // eslint-disable-next-line no-restricted-globals
+    let isConfirmed = confirm(
       "Switching accounts will take some time to refresh. Are you sure? "
     );
     if (!isConfirmed) {
@@ -52,6 +52,7 @@ export default function NavComponents(props) {
       });
       return;
     }
+    sessionStorage.removeItem("iam_users");
     toast(`Successfully switched to account ${currentAccount}`, {
       draggable: false,
       position: "top-right",
@@ -125,36 +126,57 @@ export default function NavComponents(props) {
               )}
               {(user?.type === "root" || user?.type === "admin") && token && (
                 <>
-                <li className="nav-item">
-                  <div
-                    className="nav-link text-light "
-                    aria-current="page"
-                    role="button"
-                    onClick={() => navigate("/manage/user")}
-                  >
-                    Users
-                  </div>
-                </li>
-                <li className="nav-item">
-                  <div
-                    className="nav-link text-light "
-                    aria-current="page"
-                    role="button"
-                    onClick={() => navigate("/manage/task")}
-                  >
-                    Task
-                  </div>
-                </li>
-                <li className="nav-item">
-                  <div
-                    className="nav-link text-light "
-                    aria-current="page"
-                    role="button"
-                    onClick={() => navigate("/manage/iam/users")}
-                  >
-                    IAM
-                  </div>
-                </li>
+                  <li className="nav-item">
+                    <div
+                      className="nav-link text-light "
+                      aria-current="page"
+                      role="button"
+                      onClick={() => navigate("/manage/user")}
+                    >
+                      Users
+                    </div>
+                  </li>
+                  <li className="nav-item">
+                    <div
+                      className="nav-link text-light "
+                      aria-current="page"
+                      role="button"
+                      onClick={() => navigate("/manage/task")}
+                    >
+                      Task
+                    </div>
+                  </li>
+                  <li className="nav-item dropdown">
+                    <div
+                      className="nav-link text-light dropdown-toggle"
+                      aria-current="page"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    >
+                      IAM
+                    </div>
+                    <ul className="dropdown-menu">
+                      <li>
+                        <a
+                          role="button"
+                          onClick={() => navigate("/manage/iam/users")}
+                          className="dropdown-item"
+                        >
+                          Users
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          role="button"
+                          onClick={() => navigate("/manage/iam/users")}
+                          className="dropdown-item"
+                        >
+                          Groups
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
                 </>
               )}
             </ul>

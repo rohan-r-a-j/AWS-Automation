@@ -49,16 +49,15 @@ code {
   animation: spin 3s infinite linear;
 }
 
-.cost-table tr:hover td{
+.cost-table tr:hover td {
   background-color: rgba(95, 30, 190, 0.1) !important;
 }
-.cost-table tbody tr:hover th{
-background-color: rgba(60, 145, 255,0.65) !important;
+.cost-table tbody tr:hover th {
+  background-color: rgba(60, 145, 255, 0.65) !important;
 }
-.cost-table tr td:hover{
+.cost-table tr td:hover {
   background-color: rgba(95, 30, 190, 0.25) !important;
 }
-
 
 @keyframes spin {
   0% {
@@ -141,7 +140,7 @@ text {
   border-bottom: solid 2px #888;
 }
 .dropdown-item:hover {
-  background-color: #444 !important;
+  background-color: rgba(95, 30, 190, 0.35) !important;
 }
 
 .user-icon {
@@ -162,4 +161,33 @@ text {
 
 .hover-none:hover {
   background-color: rgba(0, 0, 0, 0) !important;
+}
+.group-picker {
+  position: relative;
+  z-index: 4;
+}
+.group-picker .form-control + .list-group {
+  /* display: none !important; */
+  /* position: absolute; */
+  max-height: 10rem;
+  overflow-y: auto;
+  width: 100%;
+  /* z-index: 1000 !important; */
+}
+/* .group-picker .form-control:focus + .list-group {
+  display: block !important;
+}
+.group-picker .form-control:focus + .list-group:has(.list-group-item:focus-within) {
+  display: block !important;
+} */
+
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  top: 0;
+  left: 0;
+  z-index: 100;
 }

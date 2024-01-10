@@ -24,6 +24,7 @@ import ChangePassword from "./components/ChangePassword";
 import Task from "./components/Task";
 import AddTask from "./components/AddTask";
 import IAMUsers from "./components/IAMUsers";
+import CreateIAMUser from "./components/CreateIAMUser";
 
 let permittedUsers = ["root", "admin"];
 let authHandler = () => {
@@ -74,7 +75,12 @@ let router = createBrowserRouter([
   },
   { path: "/manage/task", element: <Task />, loader: rootHandler },
   { path: "/manage/task/create", element: <AddTask />, loader: rootHandler },
-  {path:'/manage/iam/users',element:<IAMUsers />,loader:rootHandler }
+  { path: "/manage/iam/users", element: <IAMUsers />, loader: rootHandler },
+  {
+    path: "/manage/iam/users/create",
+    element: <CreateIAMUser />,
+    loader: rootHandler,
+  },
 ]);
 
 root.render(
