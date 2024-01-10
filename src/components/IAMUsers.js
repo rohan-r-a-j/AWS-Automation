@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
 import { toast } from "react-toastify";
 
+
 const IAMUsers = () => {
   let [state, dispatch] = useContext(StateContext);
   let navigate = useNavigate();
@@ -13,7 +14,7 @@ const IAMUsers = () => {
   let { currentAccount } = state;
 
   function handelSearch(e) {
-    console.log('st',state)
+   
     if (e.target.value.trim() === "") return setUsers(state.iam_users);
     else
       setUsers(
@@ -80,7 +81,7 @@ const IAMUsers = () => {
           if (data.error) throw new Error(data.error);
           setUsers(data);
           dispatch({ type: "iam_users", payload: { iam_users: data } });
-          console.log("fetch userss",state);
+         
           sessionStorage.setItem("iam_users", JSON.stringify(data));
         })
         .catch((err) => {

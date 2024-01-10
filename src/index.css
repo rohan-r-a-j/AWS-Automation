@@ -29,6 +29,9 @@ code {
     rgba(60, 145, 255, 1) 50%
   ) !important;
 }
+.btn-primary{
+  background-color: rgba(95, 30, 190, 1) !important;
+}
 .custom-row > * {
   padding-inline: 4px !important;
 }

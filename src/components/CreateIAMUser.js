@@ -4,6 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
 import { toast } from "react-toastify";
 import { StateContext } from "../context/state";
+let mailBody = `Dear User,
+ 
+Welcome to Amazon Web Services (AWS)! As part of our team, you now have access to a wide range of cloud services and resources. Attached is console login credentials for you.
+ 
+To ensure a smooth and secure experience, please take note of the following important account guidelines.
+ 
+Basic Guidelines:
+ 
+1.Enabling Multi-Factor Authentication (MFA): For enhanced security, enabling MFA on your account is mandatory. MFA adds an extra layer of protection on top of your username and password. Please set this up as soon as possible as you’ll not be able to access any resource unless enabled. (Attached is the SOP for the same for your reference.)
+ 
+2.Tagging Resources: It is essential to tag all your AWS resources with your name. Tagging helps in identifying and managing resources effectively. Please note, resources that are not appropriately tagged with your name will be subject to deletion during our periodic reviews.
+ 
+3. Please Stop or delete your resources when not in use.
+ 
+In case you need additional permissions, encounter any issues or have questions, feel free to write to us at aws-admins@hcl.com.
+ 
+Thank You For Your Cooperation
+HCLTech ERS AWS Administration Team  `;
 const CreateIAMUser = () => {
   let [state, dispatch] = useContext(StateContext);
   let [loading, setLoading] = useState(false);
@@ -75,7 +93,7 @@ const CreateIAMUser = () => {
           throw new Error(data.error_message);
         }
 
-        toast(`User ${data.message} created`, {
+        toast(data.message, {
           draggable: false,
           position: "bottom-right",
           type: "success",
@@ -153,7 +171,7 @@ const CreateIAMUser = () => {
         prev.filter((item) => item !== e.target.value)
       );
     }
-    console.log("selecte", selectedGroups);
+
   }
   return (
     <div
@@ -214,7 +232,7 @@ const CreateIAMUser = () => {
                         // left: 0,
                         height: "10rem",
                       }}
-                      class="list-group"
+                      className="list-group"
                     >
                       {groups.groupNames.map((item, i) => (
                         <li key={i} className="list-group-item">
@@ -256,7 +274,7 @@ const CreateIAMUser = () => {
             </button>
             <button
               type="button"
-              onClick={() => setModal(true)}
+              onClick={() => navigate(-1)}
               className="btn btn-outline-danger"
             >
               Discard
@@ -287,11 +305,28 @@ const CreateIAMUser = () => {
       {modal && (
         <div className="backdrop d-flex flex-row justify-content-center align-items-center">
           <div style={{ zIndex: 12 }} className="card p-4 w-50 ">
-            <h3 className="card-title text-center">Console Sign Details</h3>
+            
+          <div className="d-flex flex-row justify-content-between">
+          <h3 className="card-title text-left">Console Sign In Details</h3>
+          <a
+            className="text-right"
+              href={`mailto:${
+                response.username
+              }&Subject=Welcome to AWS - Important Account Information and Guidelines&body=${encodeURIComponent(
+                mailBody
+              )}`}
+            >
+              <button className="btn btn-outline-secondary">E-mail Sign In Instructions &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+  <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+</svg></button>
+            </a>
+          </div>
             <hr />
             <div className="row">
               <div className="col-6">
                 <div className="text-secondary">Username:</div>
+
                 <div>
                   {cp === response.username && "Copied"}
                   <button
@@ -310,7 +345,7 @@ const CreateIAMUser = () => {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-copy"
+                      className="bi bi-copy"
                     >
                       <path
                         fill-rule="evenodd"
@@ -341,7 +376,7 @@ const CreateIAMUser = () => {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-copy"
+                      className="bi bi-copy"
                     >
                       <path
                         fill-rule="evenodd"
@@ -375,7 +410,7 @@ const CreateIAMUser = () => {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-copy"
+                      className="bi bi-copy"
                     >
                       <path
                         fill-rule="evenodd"
@@ -404,7 +439,7 @@ const CreateIAMUser = () => {
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-download"
+                  className="bi bi-download"
                   viewBox="0 0 16 16"
                 >
                   <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
