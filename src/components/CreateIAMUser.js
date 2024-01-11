@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState,useRef } from "react";
 import "./styles/loader.css";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
@@ -26,6 +26,7 @@ const CreateIAMUser = () => {
   let [state, dispatch] = useContext(StateContext);
   let [loading, setLoading] = useState(false);
   let [showList, setShowList] = useState(false);
+  let checkboxRef = useRef(null);
   let [selectedGroups, setSelectedGroups] = useState([]);
   let [response, setResponse] = useState(null);
   let [modal, setModal] = useState(false);
@@ -65,6 +66,7 @@ const CreateIAMUser = () => {
   }, []);
   function onSubmit(e) {
     e.preventDefault();
+    if(~checkboxRef.current.checked) return;
     let { username } = e.target.elements;
 
     setLoading(true);
@@ -265,6 +267,8 @@ const CreateIAMUser = () => {
               type="checkbox"
               className="form-check-input"
               id="exampleCheck1"
+              ref={checkboxRef}
+              required={true}
             ></input>
             <label className="form-check-label short-label-manual" htmlFor="exampleCheck1">
             I Understand the <span style={{color: "blue"}} >Terms & Conditions</span> and am aware of the <span style={{color: "red"}} > Groups & Permissions</span> provided to the user.

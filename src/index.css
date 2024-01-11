@@ -29,8 +29,17 @@ code {
     rgba(60, 145, 255, 1) 50%
   ) !important;
 }
-.btn-primary{
+.btn-primary {
   background-color: rgba(95, 30, 190, 1) !important;
+}
+.btn-outline-primary{
+  border-color: rgba(95, 30, 190, 1) !important;
+  outline-color: rgba(95, 30, 190, 1) !important;
+  color:rgba(95, 30, 190, 1);
+}
+.btn-outline-primary:hover{
+  background-color: rgba(95, 30, 190, 1) !important;
+  color: #fff;
 }
 .custom-row > * {
   padding-inline: 4px !important;
@@ -51,7 +60,10 @@ code {
   transform-origin: center;
   animation: spin 3s infinite linear;
 }
-
+.cost-table thead th {
+  background-color: rgba(95, 30, 190, 1);
+  color: #eee;
+}
 .cost-table tr:hover td {
   background-color: rgba(95, 30, 190, 0.1) !important;
 }
@@ -195,6 +207,17 @@ text {
   z-index: 100;
 }
 
-.short-label-manual{
+.short-label-manual {
   font-size: 85%;
+}
+.action-card {
+  transition: all 300ms linear 100ms;
+}
+.action-card p {
+  transition: all 300ms linear 100ms;
+}
+.action-card:hover {
+  position: static;
+  width: 40%;
+  /* height: 80%; */
 }

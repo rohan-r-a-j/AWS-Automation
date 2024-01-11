@@ -152,7 +152,7 @@ export default function NavComponents(props) {
                       aria-current="page"
                       role="button"
                       data-bs-toggle="dropdown"
-                    aria-expanded="false"
+                      aria-expanded="false"
                     >
                       IAM
                     </div>
@@ -176,6 +176,19 @@ export default function NavComponents(props) {
                         </a>
                       </li>
                     </ul>
+                  </li>
+                  <li className="nav-item ">
+                    <div
+                      className="nav-link text-light"
+                      aria-current="page"
+                      role="button"
+                      onClick={() => {
+                        navigate("/manage/action");
+                        sessionStorage.removeItem("fetch_inactive_users");
+                      }}
+                    >
+                      Action
+                    </div>
                   </li>
                 </>
               )}

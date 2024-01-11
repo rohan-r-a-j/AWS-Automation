@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./styles/loader.css";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
 import { toast } from "react-toastify";
 const AddUser = () => {
   let [loading, setLoading] = useState(false);
+  let checkboxRef = useRef(null);
   let navigate = useNavigate();
   function onSubmit(e) {
     e.preventDefault();
+    if (!checkboxRef.current.checked) return;
     let { firstName, lastName, email, password, cnfPassword, role, accountId } =
       e.target.elements;
     let userData = {};
@@ -17,7 +19,7 @@ const AddUser = () => {
     userData.email = email.value;
     userData.password = password.value;
     // userData.accountId = accountId.value;
-  
+
     setLoading(true);
     fetch(`${baseUrl}/users/create`, {
       headers: {
@@ -32,17 +34,26 @@ const AddUser = () => {
         return res.json();
       })
       .then((data) => {
-       
         if (data.error) {
           throw new Error(data.error);
         }
-        toast(`User ${data.data.name} created`,{draggable:false,position:'bottom-right',type:'success',theme:'colored'})
+        toast(`User ${data.data.name} created`, {
+          draggable: false,
+          position: "bottom-right",
+          type: "success",
+          theme: "colored",
+        });
         setLoading(false);
         navigate("/manage/user");
       })
       .catch((err) => {
         console.error(err);
-        toast(err.message,{draggable:false,position:'bottom-right',type:'error',theme:'colored'})
+        toast(err.message, {
+          draggable: false,
+          position: "bottom-right",
+          type: "error",
+          theme: "colored",
+        });
         setLoading(false);
       });
   }
@@ -84,7 +95,12 @@ const AddUser = () => {
               <label htmlFor="exampleInputEmail1" className="form-label">
                 Email:
               </label>
-              <input name="email" type="email" className="form-control" placeholder="email@domain.com"></input>
+              <input
+                name="email"
+                type="email"
+                className="form-control"
+                placeholder="email@domain.com"
+              ></input>
             </div>
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
@@ -94,7 +110,7 @@ const AddUser = () => {
                 name="password"
                 type="password"
                 className="form-control"
-                placeholder="Min. 8 Characters" 
+                placeholder="Min. 8 Characters"
               ></input>
             </div>
             <div className="col-6 mb-3">
@@ -139,16 +155,25 @@ const AddUser = () => {
               type="checkbox"
               className="form-check-input"
               id="exampleCheck1"
+              required={true}
+              ref={checkboxRef}
             ></input>
             <label className="form-check-label" htmlFor="exampleCheck1">
-             I Agree to the <span style={{color: "blue"}} >Terms & Conditions</span> and am aware of the <span style={{color: "red"}} > Level of Permissions</span> of the role selected.
+              I Agree to the{" "}
+              <span style={{ color: "blue" }}>Terms & Conditions</span> and am
+              aware of the{" "}
+              <span style={{ color: "red" }}> Level of Permissions</span> of the
+              role selected.
             </label>
           </div>
           <div className="d-grid gap-2">
             <button type="submit" className="btn btn-primary">
               Create
             </button>
-            <button onClick={()=>navigate('/manage/user')} className="btn btn-outline-danger">
+            <button
+              onClick={() => navigate("/manage/user")}
+              className="btn btn-outline-danger"
+            >
               Discard
             </button>
           </div>

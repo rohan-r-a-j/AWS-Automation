@@ -25,6 +25,9 @@ import Task from "./components/Task";
 import AddTask from "./components/AddTask";
 import IAMUsers from "./components/IAMUsers";
 import CreateIAMUser from "./components/CreateIAMUser";
+import Actions from "./components/Actions";
+import StoppedInstances from "./components/StoppedInstanses";
+import InactiveUsers from "./components/InactiveUsers";
 
 let permittedUsers = ["root", "admin"];
 let authHandler = () => {
@@ -81,6 +84,18 @@ let router = createBrowserRouter([
     element: <CreateIAMUser />,
     loader: rootHandler,
   },
+  {
+    path:'/manage/action',
+    element:<Actions />
+  },
+  {
+    path:'/manage/action/stopped-instances',
+    element:<StoppedInstances />
+  },
+  {
+    path:'/manage/action/inactive-users',
+    element:<InactiveUsers />
+  }
 ]);
 
 root.render(

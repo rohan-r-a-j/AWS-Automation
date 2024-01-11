@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/utils";
 import { toast } from "react-toastify";
@@ -6,9 +6,11 @@ import { StateContext } from "../context/state";
 const AddTask = () => {
   let [loading, setLoading] = useState(false);
   let [state, dispatch] = useContext(StateContext);
+  let checkboxRef = useRef(null);
   let navigate = useNavigate();
   function onSubmit(e) {
     e.preventDefault();
+    if (!checkboxRef.current.checked) return;
     let { name, url, type, description } = e.target.elements;
 
     // return console.log(e.target.elements);
@@ -125,9 +127,18 @@ const AddTask = () => {
               type="checkbox"
               className="form-check-input"
               id="exampleCheck1"
+              required={true}
+              ref={checkboxRef}
             ></input>
-            <label className="form-check-label short-label-manual " htmlFor="exampleCheck1">
-            I Understand the <span style={{color: "blue"}} >Terms & Conditions</span> and am aware of the <span style={{color: "red"}} > Level Of Action</span> the Lambda can perform.
+            <label
+              className="form-check-label short-label-manual "
+              htmlFor="exampleCheck1"
+            >
+              I Understand the{" "}
+              <span style={{ color: "blue" }}>Terms & Conditions</span> and am
+              aware of the{" "}
+              <span style={{ color: "red" }}> Level Of Action</span> the Lambda
+              can perform.
             </label>
           </div>
           <div className="d-grid gap-2">
