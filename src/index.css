@@ -194,3 +194,7 @@ text {
   left: 0;
   z-index: 100;
 }
+
+.short-label-manual{
+  font-size: 85%;
+}

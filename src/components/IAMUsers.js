@@ -109,7 +109,7 @@ const IAMUsers = () => {
                   onClick={() => navigate("/manage/iam/users/create")}
                 >
                   {" "}
-                  + Add User
+                 Create User +
                 </div>
               </div>
               <div className="col-6 d-flex align-items-center">
@@ -162,7 +162,7 @@ const IAMUsers = () => {
                 }}
                 scope="col"
               >
-                MFA
+                MFA Status
               </th>
               <th
                 style={{
@@ -261,10 +261,10 @@ const IAMUsers = () => {
                       className="btn btn-sm btn-primary"
                       //   onClick={() => navigate(`edit/${item._id}`)}
                     >
-                      edit
+                      Edit
                     </div>
-                    <div className="btn btn-sm btn-danger mx-1">delete</div>
-                    <div className="btn btn-sm btn-secondary mx-1">reset</div>
+                    <div className="btn btn-sm btn-danger mx-1">Delete</div>
+                    <div className="btn btn-sm btn-secondary mx-1">Disable</div>
                   </td>
                 </tr>
               ))}

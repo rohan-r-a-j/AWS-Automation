@@ -56,11 +56,12 @@ const AddUser = () => {
         style={{ position: "relative", overflow: "hidden" }}
       >
         <form onSubmit={onSubmit}>
-          <h4>Create a new User</h4>
+          <h4 className="text-left">Create a New Profile for Portal Access</h4>
+          <hr />
           <div className="row">
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                First Name
+                First Name:
               </label>
               <input
                 name="firstName"
@@ -70,7 +71,7 @@ const AddUser = () => {
             </div>
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                Last Name
+                Last Name:
               </label>
               <input
                 name="lastName"
@@ -81,23 +82,24 @@ const AddUser = () => {
             </div>
             <div className="col-12 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                Email
+                Email:
               </label>
-              <input name="email" type="email" className="form-control"></input>
+              <input name="email" type="email" className="form-control" placeholder="email@domain.com"></input>
             </div>
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                Password
+                Password:
               </label>
               <input
                 name="password"
                 type="password"
                 className="form-control"
+                placeholder="Min. 8 Characters" 
               ></input>
             </div>
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                Confirm Password
+                Confirm Password:
               </label>
               <input
                 name="cnfPassword"
@@ -107,10 +109,10 @@ const AddUser = () => {
             </div>
             <div className="col-6 mb-3">
               <label htmlFor="exampleInputEmail1" className="form-label">
-                role
+                Role:
               </label>
               <select name="role" type="text" className="form-control">
-                <option value="">Please select</option>
+                <option value="">Please Select Role appropriately</option>
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
               </select>
@@ -139,11 +141,11 @@ const AddUser = () => {
               id="exampleCheck1"
             ></input>
             <label className="form-check-label" htmlFor="exampleCheck1">
-              Agree
+             I Agree to the <span style={{color: "blue"}} >Terms & Conditions</span> and am aware of the <span style={{color: "red"}} > Level of Permissions</span> of the role selected.
             </label>
           </div>
           <div className="d-grid gap-2">
-            <button type="submit" className="btn btn-outline-success">
+            <button type="submit" className="btn btn-primary">
               Create
             </button>
             <button onClick={()=>navigate('/manage/user')} className="btn btn-outline-danger">

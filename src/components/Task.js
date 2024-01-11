@@ -65,8 +65,8 @@ const Task = () => {
       }
     });
     toast.promise(promise, {
-      pending: "invoking the task",
-      success: "successfully invoked the task",
+      pending: "Invoking the task",
+      success: "Successfully invoked the task",
       error: "failed to invoke the task",
     });
   }
@@ -76,7 +76,8 @@ const Task = () => {
       <div className="d-flex flex-row justify-content-center">
         <button
           onClick={() => navigate("create")}
-          className="btn btn-lg btn-success my-3"
+          className="btn btn-primary task-button"
+          style={{zIndex:1, position: "absolute", top:"85vh", bottom: "0vh;",  right:"5vh", }}
         >
           Add New Task +
         </button>

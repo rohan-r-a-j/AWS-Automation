@@ -37,7 +37,7 @@ const AddTask = () => {
         }
         toast(data.message, {
           draggable: false,
-          position: "bottom-right",
+          position: "top-right",
           type: "success",
           theme: "colored",
         });
@@ -48,7 +48,7 @@ const AddTask = () => {
         console.error(err);
         toast(err.message, {
           draggable: false,
-          position: "bottom-right",
+          position: "top-right",
           type: "error",
           theme: "colored",
         });
@@ -126,12 +126,12 @@ const AddTask = () => {
               className="form-check-input"
               id="exampleCheck1"
             ></input>
-            <label className="form-check-label" htmlFor="exampleCheck1">
-              Agree
+            <label className="form-check-label short-label-manual " htmlFor="exampleCheck1">
+            I Understand the <span style={{color: "blue"}} >Terms & Conditions</span> and am aware of the <span style={{color: "red"}} > Level Of Action</span> the Lambda can perform.
             </label>
           </div>
           <div className="d-grid gap-2">
-            <button type="submit" className="btn btn-outline-success">
+            <button type="submit" className="btn btn-primary">
               Create
             </button>
             <button

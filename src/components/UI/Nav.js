@@ -41,10 +41,10 @@ export default function NavComponents(props) {
   function handleClick(currentAccount) {
     // eslint-disable-next-line no-restricted-globals
     let isConfirmed = confirm(
-      "Switching accounts will take some time to refresh. Are you sure? "
+      "Please note: After switching accounts, the dashboard data will take some time to refresh. Do you want to continue? "
     );
     if (!isConfirmed) {
-      toast("Can't switch to account", {
+      toast("Switching Account Operation Cancelled by User.", {
         draggable: false,
         position: "bottom-right",
         type: "error",
@@ -53,7 +53,7 @@ export default function NavComponents(props) {
       return;
     }
     sessionStorage.removeItem("iam_users");
-    toast(`Successfully switched to account ${currentAccount}`, {
+    toast(`Successfully switched to the account: ${currentAccount}`, {
       draggable: false,
       position: "top-right",
       type: "success",
@@ -133,7 +133,7 @@ export default function NavComponents(props) {
                       role="button"
                       onClick={() => navigate("/manage/user")}
                     >
-                      Users
+                      Profiles
                     </div>
                   </li>
                   <li className="nav-item">
@@ -143,7 +143,7 @@ export default function NavComponents(props) {
                       role="button"
                       onClick={() => navigate("/manage/task")}
                     >
-                      Task
+                      Tasks
                     </div>
                   </li>
                   <li className="nav-item dropdown">
@@ -202,7 +202,7 @@ export default function NavComponents(props) {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    AWS ID:{" "}
+                    Account ID:{" "}
                     <span
                       style={{ fontWeight: "900", fontFamily: "monospace" }}
                     >
@@ -213,12 +213,12 @@ export default function NavComponents(props) {
                   <ul className="dropdown-menu dropdown-menu-dark">
                     <li onClick={() => handleClick("051650638025")}>
                       <a className="dropdown-item " href="#">
-                        AWS ID: 051650638025
+                        Account ID: 051650638025
                       </a>
                     </li>
                     <li onClick={() => handleClick("388328004932")}>
                       <a className="dropdown-item " href="#">
-                        AWS ID: 388328004932
+                        Account ID: 388328004932
                       </a>
                     </li>
                   </ul>

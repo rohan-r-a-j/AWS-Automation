@@ -78,10 +78,11 @@ const ChangePassword = () => {
       className="d-flex flex-row justify-content-center align-items-center h-full    "
     >
       <div style={{ width: "40%" }} className="card p-3 ">
-        <h2 className="text-center">Change Password</h2>
+        <h3 className="text-left">Change Password For Portal Access</h3>
+        <hr />
         <form className="row" onSubmit={handleChange}>
           <div className="col-12">
-            <label>Enter current password</label>
+            <label>Enter Your current password:</label>
             <input
               name="oldPassword"
               className="form-control"
@@ -95,7 +96,7 @@ const ChangePassword = () => {
               )}
           </div>
           <div className="col-6">
-            <label>Enter new password</label>
+            <label>Enter a new password:</label>
             <input
               name="newPassword"
               className="form-control"
@@ -109,7 +110,7 @@ const ChangePassword = () => {
               )}
           </div>
           <div className="col-6">
-            <label>Confirm new password</label>
+            <label>Confirm your new password:</label>
             <input
               name="cnfnewPassword"
               className="form-control"
@@ -128,7 +129,7 @@ const ChangePassword = () => {
                 Object.values(isValid).some((item) => item.error) ||
                 Object.values(isValid).length === 0
               }
-              className="btn btn-warning"
+              className="btn btn-primary"
             >
               Submit
             </button>

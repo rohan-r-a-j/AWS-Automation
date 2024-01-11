@@ -48,8 +48,11 @@ const Login = () => {
           <div className="main-div">
             <div className="panel">
               <h2>Administrator Login</h2>
-              <p>Please enter your email and password</p>
+              <hr />
+              <p>Please enter your Login Credentials</p>
+             
             </div>
+           
             <form id="Login" onSubmit={handleSubmit}>
               <div className="form-group">
                 <input
@@ -77,12 +80,12 @@ const Login = () => {
                 className="forgot"
                 
               >
-                <a  onClick={() =>
-                  alert(
-                    "Connect to Admin for password or Reach out to aws-admins@hcl.com"
-                  )
-                } role="button">Forgot password?</a>
+                 <a href="mailto:aws-admins@hcl.com?subject=Password%20Reset%20Request%20for%20Administration%20Portal&body=%0ADear%20Admins%2C%0A%0AI%20forgot%20my%20password%20and%20am%20unable%20to%20log%20into%20the%20Administration%20Portal%20at%20https%3A//hcl-cloudadmins.com%0A%0APlease%20help%20me%20to%20reset%20my%20password%20so%20that%20I%20can%20log%20in%20again.%0A"  role="button"><span style={{color:"#7676ff"}}>Forgot password? </span></a>
+
               </div>
+
+             
+
               <button type="submit" className="btn btn-primary">
                 Login
               </button>

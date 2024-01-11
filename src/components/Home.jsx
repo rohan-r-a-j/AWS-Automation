@@ -38,91 +38,91 @@ let instanceConfig = [
     type: "s3",
   },
 ];
-let accountApiConfig = {
-  "051650638025": [
-    {
-      key: "ec2",
-      apiUrl:
-        "https://ea2o6hzj4u3afffie2hkfcnr6u0couos.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "eks_cluster",
-      apiUrl:
-        "https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "rds",
-      apiUrl:
-        "https://2kiedl7rgvlchcdhypekeioo2i0mgele.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "s3",
-      apiUrl:
-        "https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "top_7_service_data",
-      apiUrl:
-        "https://uiwbbi25clx4enlmvohblsszxa0pcqoa.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "reg_cost",
-      apiUrl:
-        "https://ux4rlttlwsceskaleaxzm5pyci0mqhua.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "compare_cost",
-      apiUrl:
-        "https://7oofpr4fxbh52maft7khgji72m0sxrmx.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "fetchuser",
-      apiUrl:
-        "https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/",
-    },
-  ],
-  388328004932: [
-    {
-      key: "ec2",
-      apiUrl:
-        "https://rjrze24z6imhpjxiovm56miu4u0ivssa.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "eks_cluster",
-      apiUrl:
-        "https://ltdzramvfc4tl2sqdexb26wnqy0uyegy.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "rds",
-      apiUrl:
-        "https://c6pdlv3dhexbqws4yvjs2dvcne0jcvsv.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "s3",
-      apiUrl:
-        "https://wmrk55bttl2oa3ewr4jrkq54fy0mdkun.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "top_7_service_data",
-      apiUrl:
-        "https://6vtwz5qinfrcovlir47gfutcm40remay.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "reg_cost",
-      apiUrl: "",
-    },
-    {
-      key: "compare_cost",
-      apiUrl:
-        "https://3ra33pjg3tychzzizbhprukyma0gtkro.lambda-url.us-east-1.on.aws/",
-    },
-    {
-      key: "fetchuser",
-      apiUrl:
-        "https://fxauudfplvvdqztn4ttox4i4be0udwbs.lambda-url.us-east-1.on.aws/",
-    },
-  ],
-};
+// let accountApiConfig = {
+//   "051650638025": [
+//     {
+//       key: "ec2",
+//       apiUrl:
+//         "https://ea2o6hzj4u3afffie2hkfcnr6u0couos.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "eks_cluster",
+//       apiUrl:
+//         "https://3ion5ldlftfrqbqwsnnpoxswlm0uiupw.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "rds",
+//       apiUrl:
+//         "https://2kiedl7rgvlchcdhypekeioo2i0mgele.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "s3",
+//       apiUrl:
+//         "https://f3wjptwrgzwpbxt4po5cjrgrcu0wbdal.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "top_7_service_data",
+//       apiUrl:
+//         "https://uiwbbi25clx4enlmvohblsszxa0pcqoa.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "reg_cost",
+//       apiUrl:
+//         "https://ux4rlttlwsceskaleaxzm5pyci0mqhua.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "compare_cost",
+//       apiUrl:
+//         "https://7oofpr4fxbh52maft7khgji72m0sxrmx.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "fetchuser",
+//       apiUrl:
+//         "https://i224nzjimzdnmnbthtw66ypun40hglvr.lambda-url.us-east-1.on.aws/",
+//     },
+//   ],
+//   388328004932: [
+//     {
+//       key: "ec2",
+//       apiUrl:
+//         "https://rjrze24z6imhpjxiovm56miu4u0ivssa.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "eks_cluster",
+//       apiUrl:
+//         "https://ltdzramvfc4tl2sqdexb26wnqy0uyegy.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "rds",
+//       apiUrl:
+//         "https://c6pdlv3dhexbqws4yvjs2dvcne0jcvsv.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "s3",
+//       apiUrl:
+//         "https://wmrk55bttl2oa3ewr4jrkq54fy0mdkun.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "top_7_service_data",
+//       apiUrl:
+//         "https://6vtwz5qinfrcovlir47gfutcm40remay.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "reg_cost",
+//       apiUrl: "",
+//     },
+//     {
+//       key: "compare_cost",
+//       apiUrl:
+//         "https://3ra33pjg3tychzzizbhprukyma0gtkro.lambda-url.us-east-1.on.aws/",
+//     },
+//     {
+//       key: "fetchuser",
+//       apiUrl:
+//         "https://fxauudfplvvdqztn4ttox4i4be0udwbs.lambda-url.us-east-1.on.aws/",
+//     },
+//   ],
+// };
 
 const Home = React.memo(() => {
   let [state, dispatch] = useContext(StateContext);
